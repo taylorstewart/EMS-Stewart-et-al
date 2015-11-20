@@ -1,7 +1,7 @@
 EMS_Stewart
 ==========
 
-This repository contains data files, analysis scripts, and the draft manuscript *Spatio-temporal and interindividual variation of Emerald Shiner, Notropis atherinoides, diets and energy density in Lake Erie* by Taylor R. Stewart and Mark W. Rogers.
+This repository contains data files, analysis scripts, and the draft manuscript *Spatio-temporal and interindividual variation of Emerald Shiner, Notropis atherinoides, diet and energy density in Lake Erie* by Taylor R. Stewart and Mark W. Rogers.
 
 
 # Data files (not in the repo)

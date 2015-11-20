@@ -1,0 +1,9 @@
+# Data files (so that they are not in a public repo)
+data/
+
+# History files
+.Rhistory
+
+# R data files from past sessions
+.Rdata
+.Rproj.user

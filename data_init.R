@@ -48,7 +48,8 @@ ems_cal <- read_excel(path="data/CSMI_2014_EmeraldShiner.xlsx",sheet="Calorimetr
          serial=factor(serial),
          month=factor(month),
          basin=factor(basin)) %>%
-  filter(include=="Yes")
+  filter(include=="Yes") %>% 
+  select(-c(8:15),-timestamp,-include)
 
 ## ===========================================================
 ## Zooplankton Data Manipulation

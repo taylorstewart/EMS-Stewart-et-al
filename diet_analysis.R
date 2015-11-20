@@ -181,7 +181,7 @@ diet_may_east_perc %<>% transmute(percent_dry = mean,
                                   basin = "Eastern") 
 
 ## ===========================================================
-## Autumn (Western and Eastern Basin)
+## AUTUMN (Western and Eastern Basin)
 ## ===========================================================
 ## -----------------------------------------------------------
 ## Calculate the mean percent by dry weight for each prey taxa

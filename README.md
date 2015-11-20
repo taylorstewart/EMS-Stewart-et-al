@@ -1,7 +1,7 @@
 EMS_Stewart
 ==========
 
-This repository contains data files, analysis scripts, and the draft manuscript *To Be Determined* by Taylor R. Stewart and Mark W. Rogers.
+This repository contains data files, analysis scripts, and the draft manuscript *Spatio-temporal and interindividual variation of Emerald Shiner, Notropis atherinoides, diets and energy density in Lake Erie* by Taylor R. Stewart and Mark W. Rogers.
 
 
 # Data files (not in the repo)
@@ -12,7 +12,8 @@ This repository contains data files, analysis scripts, and the draft manuscript 
 * `data/zooplankton/2014_CSMI_Zp_Sub_Rep2.xlsx` -- Excel file containing subsampled zooplankton data (Replicate #2).
 * `data/zooplankton/CSMI_Zp_Effort.xlsx` -- Excel file containing the effort needed for summarizing zooplankton biomass.
 * `data/zooplankton/CSMI_Zp_Biomass_Summary.xlsx` -- Excel file containing summarized zooplankton biomass data.
-
+* `data/water_quality/CSMI_WQ.xlsx` -- Excel file containing summarized whole-column water quality parameters.
+* `data/nutrients/` -- Multiple Excel files containing nutrient parameters.
 
 # Scripts
 ## Initialization
@@ -20,7 +21,6 @@ This repository contains data files, analysis scripts, and the draft manuscript 
     * `ems_cal`: Used in the calorimetry analysis.
     * `ems_diet`: Used in the diet analysis.
     * `zoop_biomass`: Used in the prey selectivity analysis.
-
 
 ## Length Frequency Analysis
 * `lw_regression.R` -- Processes the original length frequency data to produce a length-weight regression which was used to predict missing weights.

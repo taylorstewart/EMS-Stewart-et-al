@@ -39,7 +39,7 @@ ems_diet <- read_excel(path="data/CSMI_2014_EmeraldShiner.xlsx",sheet="Diet Summ
   mutate(fid=factor(fid),
          serial=factor(serial),
          month=factor(month),
-         basin=factor(basin),
+         basin=factor(basin,levels = c('Western','Central','Eastern'),ordered = TRUE),
          food_item=factor(food_item),
          mean_biomass_mg=as.numeric(mean_biomass_mg)) %>% 
   select(-comments,-c(9:18))
@@ -47,7 +47,7 @@ ems_cal <- read_excel(path="data/CSMI_2014_EmeraldShiner.xlsx",sheet="Calorimetr
   mutate(fid=factor(fid),
          serial=factor(serial),
          month=factor(month),
-         basin=factor(basin)) %>%
+         basin=factor(basin,levels = c('Western','Central','Eastern'),ordered = TRUE)) %>%
   filter(include=="Yes") %>% 
   select(-c(8:15),-timestamp,-include)
 
@@ -137,7 +137,7 @@ zoop_taxa <- left_join(zoop_effort,taxa)
 ## -----------------------------------------------------------
 ##  average and sum zooplankton biomass by month, region, depth strata, and family
 ## -----------------------------------------------------------
-zoop_biomass <- zoop_taxa %>% group_by(month,region,depth_strata,family) %>% 
+zoop_biomass <- zoop_taxa %>% group_by(month,region,depth_strata,family,suborder,order) %>% 
   summarize(mean_biom=mean(value2),
             total_biom=sum(value2))
 

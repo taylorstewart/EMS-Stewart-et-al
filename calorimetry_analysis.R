@@ -35,6 +35,17 @@ fitPlot(fit4,which="month",ylim=c(8000,11000),xlab="",ylab="Energy Density (J/g 
 fitPlot(fit4,ylim=c(7000,12000),xlab="",ylab="Energy Density (J/g Wet Basis)")
 fitPlot(fit4,change.order=TRUE,ylim=c(7000,12000),legend="topleft",xlab="",ylab="Energy Density (J/g Wet Basis)")
 
+## -----------------------------------------------------------
+## Put the result into a PDF file
+## -----------------------------------------------------------
+figw <- 5 # inches
+figh <- figw
+ptsz <- 12
+pdf("Figs/Figure4_alt.PDF",width=figw,height=figh,pointsize=ptsz,family="Times",onefile=TRUE)
+
+## -----------------------------------------------------------
+## Make the figure
+## -----------------------------------------------------------
 ggplot(ems_cal,aes(basin,wet_HOC_JG)) +
   geom_boxplot() +
   xlab("") +
@@ -42,6 +53,9 @@ ggplot(ems_cal,aes(basin,wet_HOC_JG)) +
   theme_bw() +
   facet_wrap(~month)
 
+dev.off()
+
+##
 ggplot(ems_cal,aes(month,wet_HOC_JG)) +
   geom_boxplot() +
   xlab("") +

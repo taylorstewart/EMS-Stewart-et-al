@@ -59,7 +59,7 @@ diet_may_west_n <- as.data.frame(do.call(rbind,lapply(diet_may_west_list,functio
 
 ## Calculate the frequency of occurency (percent) for each prey taxa
 diet_may_west_freq <- as.data.frame(do.call(rbind,lapply(1:nrow(diet_may_west_n),function(j) {
-  round(as.numeric(((diet_may_west_n[j,1])/sum(diet_may_west_n))*100),1)
+  round(as.numeric(((diet_may_west_n[j,1])/length(unique(diet_may_west)))*100),1)
 })))
 ## Add prey names to data frame
 diet_may_west_freq %<>% transmute(prey_type = diet_may_west_list,
@@ -78,7 +78,7 @@ diet_may_cen_n <- as.data.frame(do.call(rbind,lapply(diet_may_cen_list,function(
 
 ## Calculate the frequency of occurency (percent) for each prey taxa
 diet_may_cen_freq <- as.data.frame(do.call(rbind,lapply(1:nrow(diet_may_cen_n),function(j) {
-  round(as.numeric(((diet_may_cen_n[j,1])/sum(diet_may_cen_n))*100),1)
+  round(as.numeric(((diet_may_cen_n[j,1])/length(unique(diet_may_cen)))*100),1)
 })))
 ## Add prey names to data frame
 diet_may_cen_freq %<>% transmute(prey_type = diet_may_cen_list,
@@ -97,7 +97,7 @@ diet_may_east_n <- as.data.frame(do.call(rbind,lapply(diet_may_east_list,functio
 
 ## Calculate the frequency of occurency (percent) for each prey taxa
 diet_may_east_freq <- as.data.frame(do.call(rbind,lapply(1:nrow(diet_may_east_n),function(j) {
-  round(as.numeric(((diet_may_east_n[j,1])/sum(diet_may_east_n))*100),1)
+  round(as.numeric(((diet_may_east_n[j,1])/length(unique(diet_may_east)))*100),1)
 })))
 ## Add prey names to data frame
 diet_may_east_freq %<>% transmute(prey_type = diet_may_east_list,
@@ -119,7 +119,7 @@ diet_sept_west_n <- as.data.frame(do.call(rbind,lapply(diet_sept_west_list,funct
 
 ## Calculate the frequency of occurency (percent) for each prey taxa
 diet_sept_west_freq <- as.data.frame(do.call(rbind,lapply(1:nrow(diet_sept_west_n),function(j) {
-  round(as.numeric(((diet_sept_west_n[j,1])/sum(diet_sept_west_n))*100),1)
+  round(as.numeric(((diet_sept_west_n[j,1])/length(unique(diet_sept_west)))*100),1)
 })))
 ## Add prey names to data frame
 diet_sept_west_freq %<>% transmute(prey_type = diet_sept_west_list,
@@ -138,7 +138,7 @@ diet_sept_cen_n <- as.data.frame(do.call(rbind,lapply(diet_sept_cen_list,functio
 
 ## Calculate the frequency of occurency (percent) for each prey taxa
 diet_sept_cen_freq <- as.data.frame(do.call(rbind,lapply(1:nrow(diet_sept_cen_n),function(j) {
-  round(as.numeric(((diet_sept_cen_n[j,1])/sum(diet_sept_cen_n))*100),1)
+  round(as.numeric(((diet_sept_cen_n[j,1])/length(unique(diet_sept_cen)))*100),1)
 })))
 ## Add prey names to data frame
 diet_sept_cen_freq %<>% transmute(prey_type = diet_sept_cen_list,
@@ -157,7 +157,7 @@ diet_sept_east_n <- as.data.frame(do.call(rbind,lapply(diet_sept_east_list,funct
 
 ## Calculate the frequency of occurency (percent) for each prey taxa
 diet_sept_east_freq <- as.data.frame(do.call(rbind,lapply(1:nrow(diet_sept_east_n),function(j) {
-  round(as.numeric(((diet_sept_east_n[j,1])/sum(diet_sept_east_n))*100),1)
+  round(as.numeric(((diet_sept_east_n[j,1])/length(unique(diet_sept_east)))*100),1)
 })))
 ## Add prey names to data frame
 diet_sept_east_freq %<>% transmute(prey_type = diet_sept_east_list,

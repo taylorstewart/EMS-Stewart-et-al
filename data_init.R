@@ -23,11 +23,7 @@ library(ggplot2)   # visualizations
 library(FSA)       # ANCOVA functions
 library(car)       # assumption tests
 library(tidyr)     # tidy data
-
-## ===========================================================
-## Set the random seed for reproducibility
-## ===========================================================
-set.seed(84621684)
+library(nlstools)  # non-linear modeling
 
 ## ===========================================================
 ## Load and Initial Manipulations of the Fish Sample Data
@@ -47,9 +43,12 @@ ems_cal <- read_excel(path="data/CSMI_2014_EmeraldShiner.xlsx",sheet="Calorimetr
   mutate(fid=factor(fid),
          serial=factor(serial),
          month=factor(month),
-         basin=factor(basin,levels = c('Western','Central','Eastern'),ordered = TRUE)) %>%
+         basin=factor(basin,levels = c('Western','Central','Eastern'),ordered = TRUE),
+         log_tl=log(tl),
+         log_wt=log(wet_wt),
+         log_hoc=log(wet_HOC_JG)) %>%
   filter(include=="Yes") %>% 
-  select(-c(8:15),-timestamp,-include)
+  select(-c(8:15),-timestamp,-include,-comments)
 
 ## ===========================================================
 ## Zooplankton Data Manipulation

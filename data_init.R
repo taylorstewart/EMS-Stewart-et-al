@@ -1,6 +1,6 @@
 ##############################################################
 ##############################################################
-##  EMS (Taylor Stewart et al.) manuscript work
+##  EMS (Stewart et al.) manuscript work
 ##
 ##  ANALYSIS SETUP SCRIPT
 ##
@@ -28,26 +28,42 @@ library(nlstools)  # non-linear modeling
 ## Load and Initial Manipulations of the Fish Sample Data
 ## ===========================================================
 ## -----------------------------------------------------------
-## Load diet and calorimetry data
+## Load diet, calorimetry, and benthos data
 ## -----------------------------------------------------------
 ems_diet <- read_excel(path="data/CSMI_2014_EmeraldShiner.xlsx",sheet="Diet Summary") %>% 
   mutate(fid=factor(fid),
          serial=factor(serial),
-         month=factor(month),
          basin=factor(basin,levels = c('Western','Central','Eastern'),ordered = TRUE),
-         food_item=factor(food_item),
-         mean_biomass_mg=as.numeric(mean_biomass_mg)) %>% 
-  select(-comments,-c(9:18))
+         biomass=as.numeric(mean_biomass_mg)) %>% 
+  select(-comments,-c(9:21))
 ems_cal <- read_excel(path="data/CSMI_2014_EmeraldShiner.xlsx",sheet="Calorimetry") %>% 
   mutate(fid=factor(fid),
          serial=factor(serial),
-         month=factor(month),
          basin=factor(basin,levels = c('Western','Central','Eastern'),ordered = TRUE),
          log_tl=log(tl),
          log_wt=log(wet_wt),
          log_hoc=log(wet_HOC_JG)) %>%
   filter(include=="Yes") %>% 
   select(-c(8:15),-timestamp,-include,-comments)
+ems_benthos <- read_excel(path="data/benthos/CSMI_2014_Benthos_Biomass.xlsx",sheet="Biomass") %>% 
+  select(serial=sample_id,month,region,basin,ems_taxa=item,biomass=mean_biomass_mg) %>%
+  filter(ems_taxa!="Empty Sample") %>% 
+  group_by(serial,month,region,basin,ems_taxa) %>% 
+  summarize(biomass=sum(biomass)) %>% ungroup() %>% 
+  mutate(serial=factor(serial))
+
+## -----------------------------------------------------------
+## rename some diet species and summarise multiple taxa within the same fish
+## -----------------------------------------------------------
+ems_diet$food_item <- gsub("nauplii","Cyclopoida",ems_diet$food_item)
+ems_diet %<>% group_by(fid,serial,month,region,basin,tl,w_wt,food_item) %>% 
+  summarise(biomass=sum(biomass)) %>% ungroup()
+
+## -----------------------------------------------------------
+## rename some benthos species
+## -----------------------------------------------------------
+ems_benthos$ems_taxa <- gsub("Quagga mussel","Dreissenidae",ems_benthos$ems_taxa)
+ems_benthos$ems_taxa <- gsub("Zebra mussel","Dreissenidae",ems_benthos$ems_taxa)
 
 ## ===========================================================
 ## Zooplankton Data Manipulation
@@ -122,13 +138,11 @@ all_zoop <- bind_rows(zoop_pred,zoop_sub) %>%
 ## -----------------------------------------------------------
 ## summarize values and filter to serials where diets were sampled from
 ## -----------------------------------------------------------
-serial_list <- as.character(unique(ems_diet$serial))
 all_zoop %<>% group_by(SampleDate,SampleLocation,species) %>% 
   summarise(density=sum(value_den),
             biomass=sum(value_bio)) %>% 
   filter(biomass > 0, density > 0) %>% ungroup() %>% 
   mutate(serial=as.numeric(substr(SampleLocation,1,4))) %>% 
-  filter(serial %in% c(serial_list)) %>% 
   select(serial,species,density,biomass) %>% 
   arrange(serial,species)
 
@@ -148,10 +162,12 @@ zoop_effort <- inner_join(ef,all_zoop,by="serial")
 ## -----------------------------------------------------------
 taxa <- read_excel("data/zooplankton/CSMI_Zp_Taxonomy.xlsx",sheet="Taxa")
 ems_zoop <- left_join(zoop_effort,taxa,by="species") %>% 
-  select(serial,month,region,basin,species,family,suborder,order,density,biomass)
+  select(serial,month,region,basin,ems_taxa,biomass) %>% 
+  group_by(serial,month,region,basin,ems_taxa) %>% 
+  summarize(biomass=sum(biomass))
 
 ## ===========================================================
 ## clean up environment
 ## ===========================================================
 rm(all_zoop,ef,taxa,tidy_zoop_pred_biom,tidy_zoop_sub_biom,tidy_zoop_pred_dens,tidy_zoop_sub_dens,
-   zoop_effort,zoop_pred_biom,zoop_sub_biom,zoop_pred_dens,zoop_sub_dens,zoop_sub,zoop_pred,serial_list)
+   zoop_effort,zoop_pred_biom,zoop_sub_biom,zoop_pred_dens,zoop_sub_dens,zoop_sub,zoop_pred)

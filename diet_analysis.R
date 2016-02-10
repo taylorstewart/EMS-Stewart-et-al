@@ -1,6 +1,6 @@
 ##############################################################
 ##############################################################
-##  EMS (Taylor Stewart et al.) manuscript
+##  EMS (Stewart et al.) manuscript
 ##
 ##  DIET ANALYSIS SCRIPT
 ##

@@ -15,6 +15,7 @@ rm(list = ls(all.names=TRUE))
 ## Load Packages -- used here and in other scripts
 ##   other packages loaded as needed in the individual scripts
 ## ===========================================================
+library(multcomp)  # for glht()
 library(dplyr)     # manipulating data
 library(magrittr)  # for %<>%
 library(readxl)    # reading data

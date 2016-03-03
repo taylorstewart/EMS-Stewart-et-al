@@ -296,16 +296,19 @@ ggplot(ems_cal,aes(log_tl,log_hoc,group=basin)) +
   facet_wrap(~month)
 
 ## -----------------------------------------------------------
-## interaction plots (basin+month)
+## interaction plots (basin,month)
 ## -----------------------------------------------------------
-fit3 <- lm(wet_HOC_JG~basin+month,data=ems_cal)
+fit3 <- lm(wet_HOC_JG~basin,data=ems_cal)
 coef(fit3)
 anova(fit3)
 residPlot(fit3)
-fitPlot(fit3,which="basin",ylim=c(8000,11000),xlab="",ylab="Energy Density (J/g Wet Basis)")
-fitPlot(fit3,which="month",ylim=c(8000,11000),xlab="",ylab="Energy Density (J/g Wet Basis)")
-fitPlot(fit3,ylim=c(7000,12000),xlab="",ylab="Energy Density (J/g Wet Basis)")
-fitPlot(fit3,change.order=TRUE,ylim=c(7000,12000),legend="topleft",xlab="",ylab="Energy Density (J/g Wet Basis)")
+fitPlot(fit3,ylim=c(6500,8500),xlab="",ylab="Energy Density (J/g Wet Basis)")
+
+fit4 <- lm(wet_HOC_JG~month,data=ems_cal)
+coef(fit4)
+anova(fit4)
+residPlot(fit4)
+fitPlot(fit4,ylim=c(4500,10000),xlab="",ylab="Energy Density (J/g Wet Basis)")
 
 ## -----------------------------------------------------------
 ## Exploratory boxplots

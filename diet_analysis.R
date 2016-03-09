@@ -7,173 +7,46 @@
 ##############################################################
 ##############################################################
 ## ===========================================================
-## Source Data_Init Script ... get ems_diet data.frame
+## Source Data_Init Script ... get ems.diet data.frame
 ## ===========================================================
 source("data_init.R")
-ems_diet
+ems.diet
 
 ## -----------------------------------------------------------
 ## Filter into each seasons and basin, remove empties
 ## -----------------------------------------------------------
-diet_may_west <- filter(ems_diet,month=="May",basin=="Western",food_item!="Empty") %>% droplevels()
-diet_may_cen <- filter(ems_diet,month=="May",basin=="Central",food_item!="Empty") %>% droplevels()
-diet_may_east <- filter(ems_diet,month=="May",basin=="Eastern",food_item!="Empty") %>% droplevels()
-diet_sept_west <- filter(ems_diet,month=="September",basin=="Western",food_item!="Empty") %>% droplevels()
-diet_sept_cen <- filter(ems_diet,month=="September",basin=="Central",food_item!="Empty") %>% droplevels()
-diet_sept_east <- filter(ems_diet,month=="September",basin=="Eastern",food_item!="Empty") %>% droplevels()
+diet.may.west <- filter(ems.diet,month=="May",basin=="Western",food.item!="Empty") %>% droplevels()
+diet.may.cen <- filter(ems.diet,month=="May",basin=="Central",food.item!="Empty") %>% droplevels()
+diet.may.east <- filter(ems.diet,month=="May",basin=="Eastern",food.item!="Empty") %>% droplevels()
+diet.sept.west <- filter(ems.diet,month=="September",basin=="Western",food.item!="Empty") %>% droplevels()
+diet.sept.cen <- filter(ems.diet,month=="September",basin=="Central",food.item!="Empty") %>% droplevels()
+diet.sept.east <- filter(ems.diet,month=="September",basin=="Eastern",food.item!="Empty") %>% droplevels()
 
 ## -----------------------------------------------------------
-## Creat lists of prey types and fid's found for both seasons and basin
+## Create a list of prey types found for both seasons, uniquely combine, and order by functional group and alphabetically
 ## -----------------------------------------------------------
-diet_may_west_list <- unique(diet_may_west$food_item)
-diet_may_cen_list <- unique(diet_may_cen$food_item)
-diet_may_east_list <- unique(diet_may_east$food_item)
-diet_sept_west_list <- unique(diet_sept_west$food_item)
-diet_sept_cen_list <- unique(diet_sept_cen$food_item)
-diet_sept_east_list <- unique(diet_sept_east$food_item)
-fid_may_west_list <- unique(diet_may_west$fid)
-fid_may_cen_list <- unique(diet_may_cen$fid)
-fid_may_east_list <- unique(diet_may_east$fid)
-fid_sept_west_list <- unique(diet_sept_west$fid)
-fid_sept_cen_list <- unique(diet_sept_cen$fid)
-fid_sept_east_list <- unique(diet_sept_east$fid)
-
-##############################################################
-##############################################################
-##
-##  PERCENT OCCURRENCE
-##
-##############################################################
-##############################################################
-## ===========================================================
-## SPRING (Western, Central and Eastern Basin)
-## ===========================================================
-## -----------------------------------------------------------
-## Calculate the number of fish found with each prey taxa
-## -----------------------------------------------------------
-## Western
-diet_may_west_n <- as.data.frame(do.call(rbind,lapply(diet_may_west_list,function(i) {
-  diet_may_west %<>% filter(food_item == i) %>% distinct(fid)
-  nrow(diet_may_west)
-})))
-
-## Calculate the frequency of occurency (percent) for each prey taxa
-diet_may_west_freq <- as.data.frame(do.call(rbind,lapply(1:nrow(diet_may_west_n),function(j) {
-  round(as.numeric(((diet_may_west_n[j,1])/length(unique(diet_may_west$fid)))*100),1)
-})))
-## Add prey names to data frame
-diet_may_west_freq %<>% transmute(prey_type = diet_may_west_list,
-                                  percent_occur = V1,
-                                  month = "May",
-                                  basin = "Western")
+diet.may.west.list <- distinct(diet.may.west,food.item)
+diet.may.cen.list <- distinct(diet.may.cen,food.item)
+diet.may.east.list <- distinct(diet.may.east,food.item)
+diet.sept.west.list <- distinct(diet.sept.west,food.item)
+diet.sept.cen.list <- distinct(diet.sept.cen,food.item)
+diet.sept.east.list <- distinct(diet.sept.east,food.item)
+diet.list <- bind_rows(diet.may.west.list,diet.may.cen.list,diet.may.east.list,
+                       diet.sept.west.list,diet.sept.cen.list,diet.sept.east.list) %>% 
+  arrange(food.item) %>% 
+  distinct(food.item) %>% 
+  select(food.item)
+diet.list <- as.character(diet.list$food.item)
 
 ## -----------------------------------------------------------
-## Calculate the number of fish found with each prey taxa
+## Creat lists of fid's found for both seasons and basin
 ## -----------------------------------------------------------
-## Central
-diet_may_cen_n <- as.data.frame(do.call(rbind,lapply(diet_may_cen_list,function(i) {
-  diet_may_cen %<>% filter(food_item == i) %>% distinct(fid)
-  nrow(diet_may_cen)
-})))
-
-## Calculate the frequency of occurency (percent) for each prey taxa
-diet_may_cen_freq <- as.data.frame(do.call(rbind,lapply(1:nrow(diet_may_cen_n),function(j) {
-  round(as.numeric(((diet_may_cen_n[j,1])/length(unique(diet_may_cen$fid)))*100),1)
-})))
-## Add prey names to data frame
-diet_may_cen_freq %<>% transmute(prey_type = diet_may_cen_list,
-                                  percent_occur = V1,
-                                  month = "May",
-                                  basin = "Central")
-
-## -----------------------------------------------------------
-## Calculate the number of fish found with each prey taxa
-## -----------------------------------------------------------
-## Eastern
-diet_may_east_n <- as.data.frame(do.call(rbind,lapply(diet_may_east_list,function(i) {
-  diet_may_east %<>% filter(food_item == i) %>% distinct(fid)
-  nrow(diet_may_east)
-})))
-
-## Calculate the frequency of occurency (percent) for each prey taxa
-diet_may_east_freq <- as.data.frame(do.call(rbind,lapply(1:nrow(diet_may_east_n),function(j) {
-  round(as.numeric(((diet_may_east_n[j,1])/length(unique(diet_may_east$fid)))*100),1)
-})))
-## Add prey names to data frame
-diet_may_east_freq %<>% transmute(prey_type = diet_may_east_list,
-                                  percent_occur = V1,
-                                  month = "May",
-                                  basin = "Eastern")
-
-## ===========================================================
-## AUTUMN (Western and Eastern Basin)
-## ===========================================================
-## -----------------------------------------------------------
-## Calculate the number of fish found with each prey taxa
-## -----------------------------------------------------------
-## Western
-diet_sept_west_n <- as.data.frame(do.call(rbind,lapply(diet_sept_west_list,function(i) {
-  diet_sept_west %<>% filter(food_item == i) %>% distinct(fid)
-  nrow(diet_sept_west)
-})))
-
-## Calculate the frequency of occurency (percent) for each prey taxa
-diet_sept_west_freq <- as.data.frame(do.call(rbind,lapply(1:nrow(diet_sept_west_n),function(j) {
-  round(as.numeric(((diet_sept_west_n[j,1])/length(unique(diet_sept_west$fid)))*100),1)
-})))
-## Add prey names to data frame
-diet_sept_west_freq %<>% transmute(prey_type = diet_sept_west_list,
-                                   percent_occur = V1,
-                                   month = "September",
-                                   basin = "Western")
-
-## -----------------------------------------------------------
-## Calculate the number of fish found with each prey taxa
-## -----------------------------------------------------------
-## Central
-diet_sept_cen_n <- as.data.frame(do.call(rbind,lapply(diet_sept_cen_list,function(i) {
-  diet_sept_cen %<>% filter(food_item == i) %>% distinct(fid)
-  nrow(diet_sept_cen)
-})))
-
-## Calculate the frequency of occurency (percent) for each prey taxa
-diet_sept_cen_freq <- as.data.frame(do.call(rbind,lapply(1:nrow(diet_sept_cen_n),function(j) {
-  round(as.numeric(((diet_sept_cen_n[j,1])/length(unique(diet_sept_cen$fid)))*100),1)
-})))
-## Add prey names to data frame
-diet_sept_cen_freq %<>% transmute(prey_type = diet_sept_cen_list,
-                                   percent_occur = V1,
-                                   month = "September",
-                                   basin = "Central")
-
-## -----------------------------------------------------------
-## Calculate the number of fish found with each prey taxa
-## -----------------------------------------------------------
-## Eastern
-diet_sept_east_n <- as.data.frame(do.call(rbind,lapply(diet_sept_east_list,function(i) {
-  diet_sept_east %<>% filter(food_item == i) %>% distinct(fid)
-  nrow(diet_sept_east)
-})))
-
-## Calculate the frequency of occurency (percent) for each prey taxa
-diet_sept_east_freq <- as.data.frame(do.call(rbind,lapply(1:nrow(diet_sept_east_n),function(j) {
-  round(as.numeric(((diet_sept_east_n[j,1])/length(unique(diet_sept_east$fid)))*100),1)
-})))
-## Add prey names to data frame
-diet_sept_east_freq %<>% transmute(prey_type = diet_sept_east_list,
-                                   percent_occur = V1,
-                                   month = "September",
-                                   basin = "Eastern")
-
-## -----------------------------------------------------------
-## Combine into a final data frame
-## -----------------------------------------------------------
-diet_freq <- data.frame(rbind(diet_may_west_freq,diet_may_cen_freq,diet_may_east_freq,
-                              diet_sept_west_freq,diet_sept_cen_freq,diet_sept_east_freq))
-
-## Clean up environment
-rm(diet_may_east_n,diet_may_cen_n,diet_may_west_n,diet_sept_east_n,diet_sept_cen_n,diet_sept_west_n,
-   diet_may_west_freq,diet_may_cen_freq,diet_may_east_freq,diet_sept_west_freq,diet_sept_cen_freq,diet_sept_east_freq)
+fid.may.west.list <- unique(diet.may.west$fid)
+fid.may.cen.list <- unique(diet.may.cen$fid)
+fid.may.east.list <- unique(diet.may.east$fid)
+fid.sept.west.list <- unique(diet.sept.west$fid)
+fid.sept.cen.list <- unique(diet.sept.cen$fid)
+fid.sept.east.list <- unique(diet.sept.east$fid)
 
 ##############################################################
 ##############################################################
@@ -189,23 +62,23 @@ rm(diet_may_east_n,diet_may_cen_n,diet_may_west_n,diet_sept_east_n,diet_sept_cen
 ## Calculate the mean percent by dry weight for each prey taxa
 ## -----------------------------------------------------------
 ## Western
-diet_may_west_perc <- as.data.frame(do.call(cbind,lapply(fid_may_west_list,function(i) {
-  fish <- filter(diet_may_west,fid == i)
-  mean <- as.data.frame(do.call(rbind,lapply(diet_may_west_list,function(j) {
-    round((sum(filter(fish,food_item == j)$biomass)/sum(fish$biomass))*100,2)
+diet.may.west.perc <- as.data.frame(do.call(cbind,lapply(fid.may.west.list,function(i) {
+  fish <- filter(diet.may.west,fid == i)
+  mean <- as.data.frame(do.call(rbind,lapply(diet.list,function(j) {
+    round((sum(filter(fish,food.item == j)$biomass)/sum(fish$biomass))*100,2)
   })))
 })))
 
 ## Calculate row means
-diet_may_west_perc %<>% transform(mean = apply(diet_may_west_perc,1,mean),
-                                  sd = apply(diet_may_west_perc,1,sd)) %>% 
-  mutate(n=rowSums(diet_may_west_perc > 0),
+diet.may.west.perc %<>% transform(mean = apply(diet.may.west.perc,1,mean),
+                                  sd = apply(diet.may.west.perc,1,sd)) %>% 
+  mutate(n=rowSums(diet.may.west.perc > 0),
          se=sd/(sqrt(n)))
 
 ## Add prey names to data frame
-diet_may_west_perc %<>% transmute(percent_dry = mean,
-                                  dry_se = se,
-                                  prey_type = diet_may_west_list,
+diet.may.west.perc %<>% transmute(percent.dry = mean,
+                                  dry.se = se,
+                                  prey.type = diet.list,
                                   month = "May",
                                   basin = "Western") 
 
@@ -213,23 +86,23 @@ diet_may_west_perc %<>% transmute(percent_dry = mean,
 ## Calculate the mean percent by dry weight for each prey taxa
 ## -----------------------------------------------------------
 ## Central
-diet_may_cen_perc <- as.data.frame(do.call(cbind,lapply(fid_may_cen_list,function(i) {
-  fish <- filter(diet_may_cen,fid == i)
-  mean <- as.data.frame(do.call(rbind,lapply(diet_may_cen_list,function(j) {
-    round((sum(filter(fish,food_item == j)$biomass)/sum(fish$biomass))*100,2)
+diet.may.cen.perc <- as.data.frame(do.call(cbind,lapply(fid.may.cen.list,function(i) {
+  fish <- filter(diet.may.cen,fid == i)
+  mean <- as.data.frame(do.call(rbind,lapply(diet.list,function(j) {
+    round((sum(filter(fish,food.item == j)$biomass)/sum(fish$biomass))*100,2)
   })))
 })))
 
 ## Calculate row means
-diet_may_cen_perc %<>% transform(mean = apply(diet_may_cen_perc,1,mean),
-                                 sd = apply(diet_may_cen_perc,1,sd)) %>% 
-  mutate(n=rowSums(diet_may_cen_perc > 0),
+diet.may.cen.perc %<>% transform(mean = apply(diet.may.cen.perc,1,mean),
+                                 sd = apply(diet.may.cen.perc,1,sd)) %>% 
+  mutate(n=rowSums(diet.may.cen.perc > 0),
          se=sd/(sqrt(n)))
 
 ## Add prey names to data frame
-diet_may_cen_perc %<>% transmute(percent_dry = mean,
-                                 dry_se = se,
-                                 prey_type = diet_may_cen_list,
+diet.may.cen.perc %<>% transmute(percent.dry = mean,
+                                 dry.se = se,
+                                 prey.type = diet.list,
                                  month = "May",
                                  basin = "Central") 
 
@@ -237,23 +110,23 @@ diet_may_cen_perc %<>% transmute(percent_dry = mean,
 ## Calculate the mean percent by dry weight for each prey taxa
 ## -----------------------------------------------------------
 ## Eastern
-diet_may_east_perc <- as.data.frame(do.call(cbind,lapply(fid_may_east_list,function(i) {
-  fish <- filter(diet_may_east,fid == i)
-  mean <- as.data.frame(do.call(rbind,lapply(diet_may_east_list,function(j) {
-    round((sum(filter(fish,food_item == j)$biomass)/sum(fish$biomass))*100,2)
+diet.may.east.perc <- as.data.frame(do.call(cbind,lapply(fid.may.east.list,function(i) {
+  fish <- filter(diet.may.east,fid == i)
+  mean <- as.data.frame(do.call(rbind,lapply(diet.list,function(j) {
+    round((sum(filter(fish,food.item == j)$biomass)/sum(fish$biomass))*100,2)
   })))
 })))
 
 ## Calculate row means
-diet_may_east_perc %<>% transform(mean = apply(diet_may_east_perc,1,mean),
-                                  sd = apply(diet_may_east_perc,1,sd)) %>% 
-  mutate(n=rowSums(diet_may_east_perc > 0),
+diet.may.east.perc %<>% transform(mean = apply(diet.may.east.perc,1,mean),
+                                  sd = apply(diet.may.east.perc,1,sd)) %>% 
+  mutate(n=rowSums(diet.may.east.perc > 0),
          se=sd/(sqrt(n)))
 
 ## Add prey names to data frame
-diet_may_east_perc %<>% transmute(percent_dry = mean,
-                                  dry_se = se,
-                                  prey_type = diet_may_east_list,
+diet.may.east.perc %<>% transmute(percent.dry = mean,
+                                  dry.se = se,
+                                  prey.type = diet.list,
                                   month = "May",
                                   basin = "Eastern") 
 
@@ -264,23 +137,23 @@ diet_may_east_perc %<>% transmute(percent_dry = mean,
 ## Calculate the mean percent by dry weight for each prey taxa
 ## -----------------------------------------------------------
 ## Western
-diet_sept_west_perc <- as.data.frame(do.call(cbind,lapply(fid_sept_west_list,function(i) {
-  fish <- filter(diet_sept_west,fid == i)
-  mean <- as.data.frame(do.call(rbind,lapply(diet_sept_west_list,function(j) {
-    round((sum(filter(fish,food_item == j)$biomass)/sum(fish$biomass))*100,1)
+diet.sept.west.perc <- as.data.frame(do.call(cbind,lapply(fid.sept.west.list,function(i) {
+  fish <- filter(diet.sept.west,fid == i)
+  mean <- as.data.frame(do.call(rbind,lapply(diet.list,function(j) {
+    round((sum(filter(fish,food.item == j)$biomass)/sum(fish$biomass))*100,1)
   })))
 })))
 
 ## Calculate row means
-diet_sept_west_perc %<>% transform(mean = apply(diet_sept_west_perc,1,mean),
-                                   sd = apply(diet_sept_west_perc,1,sd)) %>% 
-  mutate(n=rowSums(diet_sept_west_perc > 0),
+diet.sept.west.perc %<>% transform(mean = apply(diet.sept.west.perc,1,mean),
+                                   sd = apply(diet.sept.west.perc,1,sd)) %>% 
+  mutate(n=rowSums(diet.sept.west.perc > 0),
          se=sd/(sqrt(n)))
 
 ## Add prey names to data frame
-diet_sept_west_perc %<>% transmute(percent_dry = mean,
-                                   dry_se = se,
-                                   prey_type = diet_sept_west_list,
+diet.sept.west.perc %<>% transmute(percent.dry = mean,
+                                   dry.se = se,
+                                   prey.type = diet.list,
                                    month = "September",
                                    basin = "Western") 
 
@@ -288,23 +161,23 @@ diet_sept_west_perc %<>% transmute(percent_dry = mean,
 ## Calculate the mean percent by dry weight for each prey taxa
 ## -----------------------------------------------------------
 ## Central
-diet_sept_cen_perc <- as.data.frame(do.call(cbind,lapply(fid_sept_cen_list,function(i) {
-  fish <- filter(diet_sept_cen,fid == i)
-  mean <- as.data.frame(do.call(rbind,lapply(diet_sept_cen_list,function(j) {
-    round((sum(filter(fish,food_item == j)$biomass)/sum(fish$biomass))*100,1)
+diet.sept.cen.perc <- as.data.frame(do.call(cbind,lapply(fid.sept.cen.list,function(i) {
+  fish <- filter(diet.sept.cen,fid == i)
+  mean <- as.data.frame(do.call(rbind,lapply(diet.list,function(j) {
+    round((sum(filter(fish,food.item == j)$biomass)/sum(fish$biomass))*100,1)
   })))
 })))
 
 ## Calculate row means
-diet_sept_cen_perc %<>% transform(mean = apply(diet_sept_cen_perc,1,mean),
-                                  sd = apply(diet_sept_cen_perc,1,sd)) %>% 
-  mutate(n=rowSums(diet_sept_cen_perc > 0),
+diet.sept.cen.perc %<>% transform(mean = apply(diet.sept.cen.perc,1,mean),
+                                  sd = apply(diet.sept.cen.perc,1,sd)) %>% 
+  mutate(n=rowSums(diet.sept.cen.perc > 0),
          se=sd/(sqrt(n)))
 
 ## Add prey names to data frame
-diet_sept_cen_perc %<>% transmute(percent_dry = mean,
-                                  dry_se = se,
-                                  prey_type = diet_sept_cen_list,
+diet.sept.cen.perc %<>% transmute(percent.dry = mean,
+                                  dry.se = se,
+                                  prey.type = diet.list,
                                   month = "September",
                                   basin = "Central") 
 
@@ -312,50 +185,54 @@ diet_sept_cen_perc %<>% transmute(percent_dry = mean,
 ## Calculate the mean percent by dry weight for each prey taxa
 ## -----------------------------------------------------------
 ## Eastern
-diet_sept_east_perc <- as.data.frame(do.call(cbind,lapply(fid_sept_east_list,function(i) {
-  fish <- filter(diet_sept_east,fid == i)
-  mean <- as.data.frame(do.call(rbind,lapply(diet_sept_east_list,function(j) {
-    round((sum(filter(fish,food_item == j)$biomass)/sum(fish$biomass))*100,1)
+diet.sept.east.perc <- as.data.frame(do.call(cbind,lapply(fid.sept.east.list,function(i) {
+  fish <- filter(diet.sept.east,fid == i)
+  mean <- as.data.frame(do.call(rbind,lapply(diet.list,function(j) {
+    round((sum(filter(fish,food.item == j)$biomass)/sum(fish$biomass))*100,1)
   })))
 })))
 
 ## Calculate row means
-diet_sept_east_perc %<>% transform(mean = apply(diet_sept_east_perc,1,mean),
-                                   sd = apply(diet_sept_east_perc,1,sd)) %>% 
-  mutate(n=rowSums(diet_sept_east_perc > 0),
+diet.sept.east.perc %<>% transform(mean = apply(diet.sept.east.perc,1,mean),
+                                   sd = apply(diet.sept.east.perc,1,sd)) %>% 
+  mutate(n=rowSums(diet.sept.east.perc > 0),
          se=sd/(sqrt(n)))
 
 ## Add prey names to data frame
-diet_sept_east_perc %<>% transmute(percent_dry = mean,
-                                   dry_se = se,
-                                   prey_type = diet_sept_east_list,
+diet.sept.east.perc %<>% transmute(percent.dry = mean,
+                                   dry.se = se,
+                                   prey.type = diet.list,
                                    month = "September",
                                    basin = "Eastern") 
 
 ## -----------------------------------------------------------
 ## Combine into a final data frame
 ## -----------------------------------------------------------
-diet_perc <- data.frame(rbind(diet_may_west_perc,diet_may_cen_perc,diet_may_east_perc,
-                              diet_sept_west_perc,diet_sept_cen_perc,diet_sept_east_perc))
-
-## Clean up environment
-rm(diet_may_west_perc,diet_may_cen_perc,diet_may_east_perc,diet_sept_west_perc,diet_sept_cen_perc,diet_sept_east_perc)
-
-##############################################################
-##############################################################
-##
-##  JOIN PERCENT OCCURENCE AND PERCENT DRY WEIGHT
-##
-##############################################################
-##############################################################
-ems_diet_summary <- left_join(diet_freq,diet_perc) %>% 
-  select(month,basin,prey_type,percent_occur,percent_dry,dry_se) %>% 
+ems.diet.perc <- data.frame(rbind(diet.may.west.perc,diet.may.cen.perc,diet.may.east.perc,
+                              diet.sept.west.perc,diet.sept.cen.perc,diet.sept.east.perc)) %>% 
   mutate(basin=factor(basin,levels = c('Western','Central','Eastern'),ordered = TRUE))
 
 ## Clean up environment
-rm(diet_may_west,diet_may_cen,diet_may_east,diet_sept_west,diet_sept_cen,diet_sept_east,diet_freq,diet_perc,
-   diet_may_west_list,diet_may_cen_list,diet_may_east_list,diet_sept_west_list,diet_sept_cen_list,diet_sept_east_list,
-   fid_may_west_list,fid_may_cen_list,fid_may_east_list,fid_sept_west_list,fid_sept_cen_list,fid_sept_east_list)
+rm(diet.may.west.perc,diet.may.cen.perc,diet.may.east.perc,diet.sept.west.perc,diet.sept.cen.perc,diet.sept.east.perc,
+   diet.may.west,diet.may.cen,diet.may.east,diet.sept.west,diet.sept.cen,diet.sept.east,
+   diet.may.west.list,diet.may.cen.list,diet.may.east.list,diet.sept.west.list,diet.sept.cen.list,diet.sept.east.list,
+   fid.may.west.list,fid.may.cen.list,fid.may.east.list,fid.sept.west.list,fid.sept.cen.list,fid.sept.east.list)
+
+## -----------------------------------------------------------
+## abbreviate taxon
+## -----------------------------------------------------------
+ems.diet.perc$prey.type <- gsub('Calanoida','CA',ems.diet.perc$prey.type)
+ems.diet.perc$prey.type <- gsub('Cyclopoida','CY',ems.diet.perc$prey.type)
+ems.diet.perc$prey.type <- gsub('Chironomid Larvae','CL',ems.diet.perc$prey.type)
+ems.diet.perc$prey.type <- gsub('Bosminidae','BO',ems.diet.perc$prey.type)
+ems.diet.perc$prey.type <- gsub('Leptodoridae','LE',ems.diet.perc$prey.type)
+ems.diet.perc$prey.type <- gsub('Nematoda','NE',ems.diet.perc$prey.type)
+ems.diet.perc$prey.type <- gsub('Chironomid Pupae','CP',ems.diet.perc$prey.type)
+ems.diet.perc$prey.type <- gsub('Daphnidae','DA',ems.diet.perc$prey.type)
+ems.diet.perc$prey.type <- gsub('Oligochaeta','OL',ems.diet.perc$prey.type)
+
+ems.diet.perc %<>% arrange(month,basin,prey.type) %>% 
+  filter(prey.type %in% c('BO','CA','CL','CY','DA','LE'))
 
 ##############################################################
 ##############################################################
@@ -367,7 +244,39 @@ rm(diet_may_west,diet_may_cen,diet_may_east,diet_sept_west,diet_sept_cen,diet_se
 ## -----------------------------------------------------------
 ## 
 ## -----------------------------------------------------------
-ggplot(ems_diet_summary,aes(prey_type,percent_dry)) +
-  geom_point(aes(colour=month)) +
-  theme_bw() +
-  facet_wrap(~basin)
+may.diet <- ggplot(filter(ems.diet.perc,month=='May'),aes(prey.type,percent.dry,fill=basin)) +
+  geom_errorbar(aes(x=prey.type,ymin=0,ymax=percent.dry+dry.se),
+                width=0.25,
+                position = position_dodge(.9)) +
+  scale_fill_grey(start=0.2,end=0.7) +
+  scale_y_continuous(limits = c(0,100),expand=c(0,0)) +
+  geom_bar(stat="identity",position="dodge") +
+  labs(title="May") +
+  theme(axis.text.y=element_text(size=15),axis.text.x=element_blank(),axis.line.x=element_line(),axis.line.y=element_line(),
+        legend.position=c(0.9,0.9),legend.text=element_text(size=15),legend.title=element_blank(),axis.title=element_blank(),
+        panel.background=element_blank(),plot.title=element_text(size=20),
+        plot.margin=unit(c(4,2,8,4),"mm"),axis.ticks.length=unit(1.75,'mm'))
+
+sept.diet <- ggplot(filter(ems.diet.perc,month=='September'),aes(prey.type,percent.dry,fill=basin)) +
+  geom_errorbar(aes(x=prey.type,ymin=0,ymax=percent.dry+dry.se),
+                width=0.25,
+                position = position_dodge(.9)) +
+  scale_fill_grey(start=0.2,end=0.7) +
+  scale_y_continuous(limits = c(0,100),expand=c(0,0)) +
+  geom_bar(stat="identity",position="dodge") +
+  labs(title="September") +
+  theme(axis.text=element_text(size=15),axis.line.x=element_line(),axis.line.y=element_line(),
+        legend.position='top',legend.title=element_text(),axis.title=element_blank(),
+        panel.background=element_blank(),plot.title=element_text(size=20),
+        plot.margin=unit(c(4,2,0,4),"mm"),axis.ticks.length=unit(1.75,'mm'))
+
+## -----------------------------------------------------------
+## Put plots into a matrix
+## -----------------------------------------------------------
+grid.arrange(arrangeGrob(may.diet,
+                         sept.diet + theme(legend.position="none"),
+                         ncol=1,
+                         nrow=2,
+                         left=textGrob("Diet Composition (% Dry Weight)",y=unit(98,'mm'),rot=90,gp=gpar(fontsize=20)),
+                         bottom=textGrob("Prey Type",y=unit(0,'mm'),x=unit(135,'mm'),gp=gpar(fontsize=20))),
+             heights=c(8,1))

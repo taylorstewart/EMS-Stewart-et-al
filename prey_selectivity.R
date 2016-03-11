@@ -9,7 +9,7 @@
 ## ===========================================================
 ## Source Data_Init Script ... get ems_cal data.frame
 ## ===========================================================
-source("data_init.R")
+source('data_init.R')
 str(ems.diet)
 str(ems.zoop)
 str(ems.benthos)
@@ -17,7 +17,7 @@ str(ems.benthos)
 ## -----------------------------------------------------------
 ## Remove stomachs with no diet contents
 ## -----------------------------------------------------------
-ems.diet %<>% filter(food.item != "Empty")
+ems.diet %<>% filter(food.item != 'Empty')
 
 ## -----------------------------------------------------------
 ## Combine benthos and zooplankton prey
@@ -55,7 +55,7 @@ diet.missing <- data.frame(do.call(rbind,lapply(fid.list,function(i) {
   pl <- diet.list[!diet.list %in% fid2$food.item]
   ## Determine the number of life stages to be added
   n <- length(pl)
-  ## Create data frame with all zero value life stages, repeat by "n"
+  ## Create data frame with all zero value life stages, repeat by 'n'
   tmp <- data.frame(fid=rep(i,n),serial=serial,region=region,food.item=pl,biomass=rep(0,n))
 })))
 
@@ -79,7 +79,7 @@ envir.missing <-  data.frame(do.call(rbind,lapply(month.list,function(g){
       pl <- diet.list[!diet.list %in% region2$ems.taxa]
       ## Determine the number of life stages to be added
       n <- length(pl)
-      ## Create data frame with all zero value life stages, repeat by "n"
+      ## Create data frame with all zero value life stages, repeat by 'n'
       data.frame(month=rep(g,n),region=rep(i,n),ems.taxa=pl,biomass=rep(0,n))
     })))
 })))
@@ -109,20 +109,20 @@ ems.diet.prop <- left_join(ems.diet,diet.prop)
 ## Calculate the proportion of prey available in the environment
 ## -----------------------------------------------------------
 envir.may.prop <- as.data.frame(do.call(rbind,lapply(region.list,function(i) {
-  indiv <- ems.prey.all %>% filter(region == i,month == "May")
+  indiv <- ems.prey.all %>% filter(region == i,month == 'May')
   prop <- as.data.frame(do.call(rbind,lapply(diet.list,function(j) {
     round((filter(indiv,ems.taxa == j)$biomass)/sum(indiv$biomass),4)
   })))
-  data.frame(month=rep("May",9),region=rep(i,9),food.item=diet.list,envir.prop=prop)
+  data.frame(month=rep('May',9),region=rep(i,9),food.item=diet.list,envir.prop=prop)
 }))) %>% 
   mutate(envir.prop=V1) %>% select(-V1)
 
 envir.sept.prop <- as.data.frame(do.call(rbind,lapply(region.list,function(i) {
-  indiv <- ems.prey.all %>% filter(region == i,month == "September")
+  indiv <- ems.prey.all %>% filter(region == i,month == 'September')
   prop <- as.data.frame(do.call(rbind,lapply(diet.list,function(j) {
     round((filter(indiv,ems.taxa == j)$biomass)/sum(indiv$biomass),4)
   })))
-  data.frame(month=rep("September",9),region=rep(i,9),food.item=diet.list,envir.prop=prop)
+  data.frame(month=rep('September',9),region=rep(i,9),food.item=diet.list,envir.prop=prop)
 }))) %>% 
   mutate(envir.prop=V1) %>% select(-V1)
 
@@ -132,7 +132,7 @@ ems.prey.select <- left_join(ems.diet.prop,envir.prop.all)
 ## -----------------------------------------------------------
 ## Divide proportion of prey available in the environment by proportion of prey in diet
 ## -----------------------------------------------------------
-ems.prey.select %<>% mutate("diet/envir" = diet.prop/envir.prop)
+ems.prey.select %<>% mutate('diet/envir' = diet.prop/envir.prop)
 
 ## -----------------------------------------------------------
 ## Calculate alpha ((r/p)/sum(r/p))
@@ -180,14 +180,14 @@ output1 <- data.frame(do.call(rbind,lapply(month.list,function(i) {
     taxa <- diet.list[!diet.list %in% select.filt2$taxa]
     ## Determine the number of life stages to be added
     n <- length(taxa)
-    ## Create data frame with all zero value life stages, repeat by "n"
+    ## Create data frame with all zero value life stages, repeat by 'n'
     tmp <- data.frame(month=rep(i,n),basin=rep(j,n),taxa=taxa,alpha=rep(0,n))
   })
   ## Bind list into data frame
   tmp2 <- data.frame(do.call(rbind,tmp))
   
   ## Bind all serials
-  select.all <- if((exists("select.all"))==F) {
+  select.all <- if((exists('select.all'))==F) {
     tmp2 } else {
       rbind(select.all,tmp2)
     }
@@ -220,67 +220,67 @@ final.alpha %<>% arrange(month,basin,taxa)
 ## -----------------------------------------------------------
 ## season paired t-test
 ## -----------------------------------------------------------
-t.test(filter(final.alpha,basin=="Western",month=="May")$alpha,filter(final.alpha,basin=="Western",month=="September")$alpha,paired=T)
-t.test(filter(final.alpha,basin=="Central",month=="May")$alpha,filter(final.alpha,basin=="Central",month=="September")$alpha,paired=T)
-t.test(filter(final.alpha,basin=="Eastern",month=="May")$alpha,filter(final.alpha,basin=="Eastern",month=="September")$alpha,paired=T)
+t.test(filter(final.alpha,basin=='Western',month=='May')$alpha,filter(final.alpha,basin=='Western',month=='September')$alpha,paired=T)
+t.test(filter(final.alpha,basin=='Central',month=='May')$alpha,filter(final.alpha,basin=='Central',month=='September')$alpha,paired=T)
+t.test(filter(final.alpha,basin=='Eastern',month=='May')$alpha,filter(final.alpha,basin=='Eastern',month=='September')$alpha,paired=T)
 
 ## -----------------------------------------------------------
 ## basin post-hoc pairwise t-test
 ## -----------------------------------------------------------
-pairwise.t.test(filter(final.alpha,month=="May")$alpha,filter(final.alpha,month=="May")$basin,paired=T,p.adjust.method="bonferroni")
-pairwise.t.test(filter(final.alpha,month=="September")$alpha,filter(final.alpha,month=="September")$basin,paired=T,p.adjust.method="bonferroni")
-pairwise.t.test(final.alpha$alpha,final.alpha$basin,paired=T,p.adjust.method="bonferroni")
+pairwise.t.test(filter(final.alpha,month=='May')$alpha,filter(final.alpha,month=='May')$basin,paired=T,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha,month=='September')$alpha,filter(final.alpha,month=='September')$basin,paired=T,p.adjust.method='bonferroni')
+pairwise.t.test(final.alpha$alpha,final.alpha$basin,paired=T,p.adjust.method='bonferroni')
 
 ## -----------------------------------------------------------
 ## visualization
 ## -----------------------------------------------------------
-may.west <- ggplot(filter(final.alpha,month=="May",basin=="Western"),aes(taxa,alpha)) +
-  geom_bar(stat="identity") +
-  labs(x="",y="",title="May Western") +
+may.west <- ggplot(filter(final.alpha,month=='May',basin=='Western'),aes(taxa,alpha)) +
+  geom_bar(stat='identity') +
+  labs(x='',y='May',title='Western Basin\n') +
   scale_y_continuous(limit=c(0,1),expand=c(0,0)) +
   theme(axis.line.y=element_line(),axis.line.x=element_line(),
-        axis.text.y=element_text(size=15),axis.text.x=element_blank(),panel.background=element_blank(),
-        plot.margin=unit(c(5,2,-4,0),"mm"))
+        axis.text.y=element_text(size=13,vjust=0.5,hjust=0),axis.text.x=element_blank(),plot.title=element_text(size=16),
+        axis.title=element_text(size=19),panel.background=element_blank(),plot.margin=unit(c(5,0,-5,3),'mm'))
 
-may.cen <- ggplot(filter(final.alpha,month=="May",basin=="Central"),aes(taxa,alpha)) +
-  geom_bar(stat="identity") +
-  labs(x="",y="",title="May Central") +
+may.cen <- ggplot(filter(final.alpha,month=='May',basin=='Central'),aes(taxa,alpha)) +
+  geom_bar(stat='identity') +
+  labs(x='',y='',title='Central Basin\n') +
   scale_y_continuous(limit=c(0,1),expand=c(0,0)) +
-  theme(axis.line.y=element_line(),axis.line.x=element_line(),
+  theme(axis.line.y=element_line(),axis.line.x=element_line(),plot.title=element_text(size=16),
         axis.text.y=element_blank(),axis.text.x=element_blank(),panel.background=element_blank(),
-        plot.margin=unit(c(5,2,-4,4),"mm"))
+        plot.margin=unit(c(5,1,-4,6),'mm'))
 
-may.east <- ggplot(filter(final.alpha,month=="May",basin=="Eastern"),aes(taxa,alpha)) +
-  geom_bar(stat="identity") +
-  labs(x="",y="",title="May Eastern") +
+may.east <- ggplot(filter(final.alpha,month=='May',basin=='Eastern'),aes(taxa,alpha)) +
+  geom_bar(stat='identity') +
+  labs(x='',y='',title='Eastern Basin\n') +
   scale_y_continuous(limit=c(0,1),expand=c(0,0)) +
-  theme(axis.line.y=element_line(),axis.line.x=element_line(),
+  theme(axis.line.y=element_line(),axis.line.x=element_line(),plot.title=element_text(size=16),
         axis.text.y=element_blank(),axis.text.x=element_blank(),panel.background=element_blank(),
-        plot.margin=unit(c(5,2,-4,4),"mm"))
+        plot.margin=unit(c(5,6,-4,3),'mm'))
 
-sept.west <- ggplot(filter(final.alpha,month=="September",basin=="Western"),aes(taxa,alpha)) +
-  geom_bar(stat="identity") +
-  labs(x="",y="",title="Sept Western ") +
+sept.west <- ggplot(filter(final.alpha,month=='September',basin=='Western'),aes(taxa,alpha)) +
+  geom_bar(stat='identity') +
+  labs(x='',y='September',title='') +
+  scale_y_continuous(limit=c(0,1),expand=c(0,0)) +
+  theme(axis.line.y=element_line(),axis.line.x=element_line(),
+        axis.text.x=element_text(size=13),axis.text.y=element_text(size=15),
+        axis.title=element_text(size=19),panel.background=element_blank(),plot.margin=unit(c(11,-3,-16,3),'mm'))
+
+sept.cen <- ggplot(filter(final.alpha,month=='September',basin=='Central'),aes(taxa,alpha)) +
+  geom_bar(stat='identity') +
+  labs(x='',y='',title='') +
   scale_y_continuous(limit=c(0,1),expand=c(0,0)) +
   theme(axis.line.y=element_line(),axis.line.x=element_line(),
         axis.text.x=element_text(size=13),
-        axis.text.y=element_text(size=15),panel.background=element_blank(),plot.margin=unit(c(11,2,-15,0),"mm"))
+        axis.text.y=element_blank(),panel.background=element_blank(),plot.margin=unit(c(11,1,-15,7),'mm'))
 
-sept.cen <- ggplot(filter(final.alpha,month=="September",basin=="Central"),aes(taxa,alpha)) +
-  geom_bar(stat="identity") +
-  labs(x="",y="",title="Sept Central") +
+sept.east <- ggplot(filter(final.alpha,month=='September',basin=='Eastern'),aes(taxa,alpha)) +
+  geom_bar(stat='identity') +
+  labs(x='',y='',title='') +
   scale_y_continuous(limit=c(0,1),expand=c(0,0)) +
   theme(axis.line.y=element_line(),axis.line.x=element_line(),
         axis.text.x=element_text(size=13),
-        axis.text.y=element_blank(),panel.background=element_blank(),plot.margin=unit(c(11,2,-15,4),"mm"))
-
-sept.east <- ggplot(filter(final.alpha,month=="September",basin=="Eastern"),aes(taxa,alpha)) +
-  geom_bar(stat="identity") +
-  labs(x="",y="",title="Sept Eastern") +
-  scale_y_continuous(limit=c(0,1),expand=c(0,0)) +
-  theme(axis.line.y=element_line(),axis.line.x=element_line(),
-        axis.text.x=element_text(size=13),
-        axis.text.y=element_blank(),panel.background=element_blank(),plot.margin=unit(c(11,2,-15,4),"mm"))
+        axis.text.y=element_blank(),panel.background=element_blank(),plot.margin=unit(c(11,6,-15,3),'mm'))
 
 ## -----------------------------------------------------------
 ## Put plots into a matrix
@@ -293,6 +293,6 @@ grid.arrange(arrangeGrob(may.west,
                          sept.east,
                          ncol=3,
                          nrow=2,
-                         left=textGrob("Selectivity (W')",y=unit(90,'mm'),rot=90,gp=gpar(fontsize=20)),
-                         bottom=textGrob("Prey Type",y=unit(-15,'mm'),x=unit(135,'mm'),gp=gpar(fontsize=20))),
+                         left=textGrob("Selectivity Index (W')",y=unit(90,'mm'),rot=90,gp=gpar(fontsize=20)),
+                         bottom=textGrob('Prey Type',y=unit(-15,'mm'),x=unit(135,'mm'),gp=gpar(fontsize=20))),
              heights=c(8,1))

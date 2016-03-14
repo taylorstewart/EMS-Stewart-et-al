@@ -21,11 +21,27 @@ ems.sia.mean <- ems.sia %>% group_by(month,basin) %>%
             mean.c = mean(c.amount.ug))
 
 ## fit model and conduct ANOVA
+## Nitrogen
 lm.n <- lm(n.amount.ug~basin*month,data=ems.sia)
 anova(lm.n)
+## Multiple comparisons
+## May
+lm.n.may.multc <- glht(lm(n.amount.ug~basin,data=filter(ems.sia,month=='May')),mcp(basin="Tukey"))
+summary(lm.n.may.multc)
+## Sept
+lm.n.sept.multc <- glht(lm(n.amount.ug~basin,data=filter(ems.sia,month=='Sept')),mcp(basin="Tukey"))
+summary(lm.n.sept.multc)
 
+## Carbon
 lm.c <- lm(c.amount.ug~basin*month,data=ems.sia)
 anova(lm.c)
+## Multiple comparisons
+## May
+lm.c.multc <- glht(lm(c.amount.ug~basin,data=filter(ems.sia,month=='May')),mcp(basin="Tukey"))
+summary(lm.c.multc)
+## Sept
+lm.c.multc <- glht(lm(c.amount.ug~basin,data=filter(ems.sia,month=='Sept')),mcp(basin="Tukey"))
+summary(lm.c.multc)
 
 ## boxplot
 ggplot(ems.sia,aes(basin,n.amount.ug)) +

@@ -215,7 +215,8 @@ final.alpha$taxa <- gsub('Chironomid Pupae','CP',final.alpha$taxa)
 final.alpha$taxa <- gsub('Daphnidae','DA',final.alpha$taxa)
 final.alpha$taxa <- gsub('Oligochaeta','OL',final.alpha$taxa)
 
-final.alpha %<>% arrange(month,basin,taxa)
+final.alpha %<>% arrange(month,basin,taxa) %>% 
+  filter(taxa %in% c('BO','CA','CL','CY','DA','LE'))
 
 ## -----------------------------------------------------------
 ## season paired t-test
@@ -238,9 +239,9 @@ may.west <- ggplot(filter(final.alpha,month=='May',basin=='Western'),aes(taxa,al
   geom_bar(stat='identity') +
   labs(x='',y='May',title='Western Basin\n') +
   scale_y_continuous(limit=c(0,1),expand=c(0,0)) +
-  theme(axis.line.y=element_line(),axis.line.x=element_line(),
-        axis.text.y=element_text(size=13,vjust=0.5,hjust=0),axis.text.x=element_blank(),plot.title=element_text(size=16),
-        axis.title=element_text(size=19),panel.background=element_blank(),plot.margin=unit(c(5,0,-5,3),'mm'))
+  theme(axis.line.y=element_line(),axis.line.x=element_line(),axis.ticks.length=unit(1.5,'mm'),
+        axis.text.y=element_text(size=15,vjust=0.5,hjust=0),axis.text.x=element_blank(),plot.title=element_text(size=16),
+        axis.title=element_text(size=19),panel.background=element_blank(),plot.margin=unit(c(5,0,-6,3),'mm'))
 
 may.cen <- ggplot(filter(final.alpha,month=='May',basin=='Central'),aes(taxa,alpha)) +
   geom_bar(stat='identity') +
@@ -248,7 +249,7 @@ may.cen <- ggplot(filter(final.alpha,month=='May',basin=='Central'),aes(taxa,alp
   scale_y_continuous(limit=c(0,1),expand=c(0,0)) +
   theme(axis.line.y=element_line(),axis.line.x=element_line(),plot.title=element_text(size=16),
         axis.text.y=element_blank(),axis.text.x=element_blank(),panel.background=element_blank(),
-        plot.margin=unit(c(5,1,-4,6),'mm'))
+        axis.ticks.length=unit(1.5,'mm'),plot.margin=unit(c(5,8,-4,8),'mm'))
 
 may.east <- ggplot(filter(final.alpha,month=='May',basin=='Eastern'),aes(taxa,alpha)) +
   geom_bar(stat='identity') +
@@ -256,31 +257,31 @@ may.east <- ggplot(filter(final.alpha,month=='May',basin=='Eastern'),aes(taxa,al
   scale_y_continuous(limit=c(0,1),expand=c(0,0)) +
   theme(axis.line.y=element_line(),axis.line.x=element_line(),plot.title=element_text(size=16),
         axis.text.y=element_blank(),axis.text.x=element_blank(),panel.background=element_blank(),
-        plot.margin=unit(c(5,6,-4,3),'mm'))
+        axis.ticks.length=unit(1.5,'mm'),plot.margin=unit(c(5,16,-4,0),'mm'))
 
 sept.west <- ggplot(filter(final.alpha,month=='September',basin=='Western'),aes(taxa,alpha)) +
   geom_bar(stat='identity') +
   labs(x='',y='September',title='') +
   scale_y_continuous(limit=c(0,1),expand=c(0,0)) +
   theme(axis.line.y=element_line(),axis.line.x=element_line(),
-        axis.text.x=element_text(size=13),axis.text.y=element_text(size=15),
-        axis.title=element_text(size=19),panel.background=element_blank(),plot.margin=unit(c(11,-3,-16,3),'mm'))
+        axis.text.x=element_text(size=13),axis.text.y=element_text(size=15),axis.ticks.length=unit(1.5,'mm'),
+        axis.title=element_text(size=19),panel.background=element_blank(),plot.margin=unit(c(11,0,-17,3),'mm'))
 
 sept.cen <- ggplot(filter(final.alpha,month=='September',basin=='Central'),aes(taxa,alpha)) +
   geom_bar(stat='identity') +
   labs(x='',y='',title='') +
   scale_y_continuous(limit=c(0,1),expand=c(0,0)) +
   theme(axis.line.y=element_line(),axis.line.x=element_line(),
-        axis.text.x=element_text(size=13),
-        axis.text.y=element_blank(),panel.background=element_blank(),plot.margin=unit(c(11,1,-15,7),'mm'))
+        axis.text.x=element_text(size=13),axis.ticks.length=unit(1.5,'mm'),
+        axis.text.y=element_blank(),panel.background=element_blank(),plot.margin=unit(c(11,8,-15,8),'mm'))
 
 sept.east <- ggplot(filter(final.alpha,month=='September',basin=='Eastern'),aes(taxa,alpha)) +
   geom_bar(stat='identity') +
   labs(x='',y='',title='') +
   scale_y_continuous(limit=c(0,1),expand=c(0,0)) +
   theme(axis.line.y=element_line(),axis.line.x=element_line(),
-        axis.text.x=element_text(size=13),
-        axis.text.y=element_blank(),panel.background=element_blank(),plot.margin=unit(c(11,6,-15,3),'mm'))
+        axis.text.x=element_text(size=13),axis.ticks.length=unit(1.5,'mm'),
+        axis.text.y=element_blank(),panel.background=element_blank(),plot.margin=unit(c(11,15,-15,1),'mm'))
 
 ## -----------------------------------------------------------
 ## Put plots into a matrix
@@ -293,6 +294,6 @@ grid.arrange(arrangeGrob(may.west,
                          sept.east,
                          ncol=3,
                          nrow=2,
-                         left=textGrob("Selectivity Index (W')",y=unit(90,'mm'),rot=90,gp=gpar(fontsize=20)),
-                         bottom=textGrob('Prey Type',y=unit(-15,'mm'),x=unit(135,'mm'),gp=gpar(fontsize=20))),
+                         left=textGrob("Selectivity Index (W')",y=unit(90,'mm'),rot=90,gp=gpar(fontsize=22)),
+                         bottom=textGrob('Prey Type',y=unit(-15,'mm'),x=unit(131.5,'mm'),gp=gpar(fontsize=22))),
              heights=c(8,1))

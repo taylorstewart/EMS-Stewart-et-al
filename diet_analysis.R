@@ -241,16 +241,13 @@ ems.diet.perc %<>% arrange(month,basin,prey.type) %>%
 ##
 ##############################################################
 ##############################################################
-## -----------------------------------------------------------
-## 
-## -----------------------------------------------------------
 may.diet <- ggplot(filter(ems.diet.perc,month=='May'),aes(prey.type,percent.dry,fill=basin)) +
   geom_errorbar(aes(x=prey.type,ymin=0,ymax=percent.dry+dry.se),
                 width=0.25,
-                position = position_dodge(.9)) +
+                position = position_dodge(.75)) +
   scale_fill_grey(start=0.2,end=0.7) +
   scale_y_continuous(limits = c(0,100),expand=c(0,0)) +
-  geom_bar(stat="identity",position="dodge") +
+  geom_bar(stat="identity",position="dodge",width = 0.75) +
   labs(title="May") +
   theme(axis.text.y=element_text(size=15),axis.text.x=element_blank(),axis.line.x=element_line(),axis.line.y=element_line(),
         legend.position=c(0.9,0.9),legend.text=element_text(size=15),legend.title=element_blank(),axis.title=element_blank(),
@@ -260,15 +257,20 @@ may.diet <- ggplot(filter(ems.diet.perc,month=='May'),aes(prey.type,percent.dry,
 sept.diet <- ggplot(filter(ems.diet.perc,month=='September'),aes(prey.type,percent.dry,fill=basin)) +
   geom_errorbar(aes(x=prey.type,ymin=0,ymax=percent.dry+dry.se),
                 width=0.25,
-                position = position_dodge(.9)) +
+                position = position_dodge(.75)) +
   scale_fill_grey(start=0.2,end=0.7) +
   scale_y_continuous(limits = c(0,100),expand=c(0,0)) +
-  geom_bar(stat="identity",position="dodge") +
+  geom_bar(stat="identity",position="dodge",width = 0.75) +
   labs(title="September") +
   theme(axis.text=element_text(size=15),axis.line.x=element_line(),axis.line.y=element_line(),
         legend.position='top',legend.title=element_text(),axis.title=element_blank(),
         panel.background=element_blank(),plot.title=element_text(size=20),
         plot.margin=unit(c(4,2,0,4),"mm"),axis.ticks.length=unit(1.75,'mm'))
+
+## -----------------------------------------------------------
+## Save the plot as a figure (comment out line 186 and 226 until you are ready to save)
+## -----------------------------------------------------------
+png("figs/percent_dry_weight_bar.PNG",width=7,height=7,units="in",family="Times",res=300)
 
 ## -----------------------------------------------------------
 ## Put plots into a matrix
@@ -277,6 +279,11 @@ grid.arrange(arrangeGrob(may.diet,
                          sept.diet + theme(legend.position="none"),
                          ncol=1,
                          nrow=2,
-                         left=textGrob("Diet Composition (% Dry Weight)",y=unit(98,'mm'),rot=90,gp=gpar(fontsize=20)),
-                         bottom=textGrob("Prey Type",y=unit(0,'mm'),x=unit(135,'mm'),gp=gpar(fontsize=20))),
+                         left=textGrob("Diet Composition (% Dry Weight)",y=unit(80,'mm'),rot=90,gp=gpar(fontsize=20)),
+                         bottom=textGrob("Prey Type",y=unit(0,'mm'),x=unit(91.5,'mm'),gp=gpar(fontsize=20))),
              heights=c(8,1))
+
+## -----------------------------------------------------------
+## Close the device to make the actual PNG file
+## -----------------------------------------------------------
+dev.off()

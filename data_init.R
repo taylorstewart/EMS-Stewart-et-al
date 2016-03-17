@@ -27,6 +27,7 @@ library(nlstools)  # non-linear modeling
 library(grid)      # plot matrix text
 library(gridExtra) # plot matrix layout
 library(gtable)    # plot matrix legend
+library(NCStats)   # for addSigLetters()
 
 ## ===========================================================
 ## Load and Initial Manipulations of the Fish Sample Data
@@ -61,6 +62,8 @@ ems.benthos <- read_excel(path="data/benthos/CSMI_2014_Benthos_Biomass.xlsx",she
   mutate(serial=factor(serial))
 ems.sia <- read_excel(path="data/stable_isotope/CSMI_2014_SIA_EMS.xlsx",sheet="C&N") %>% 
   select(-region)
+ems.pc <- read_excel(path="data/water_quality/CSMI_WQ.xlsx",sheet='WQ') %>% 
+  select(serial,month,basin,depth.mean,temp.mean,do.percent.mean,do.ppm.mean)
 
 ## -----------------------------------------------------------
 ## rename some diet species and summarise multiple taxa within the same fish

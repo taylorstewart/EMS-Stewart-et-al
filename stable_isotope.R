@@ -47,11 +47,11 @@ summary(lm.c.multc)
 ggplot(ems.sia,aes(basin,n.amount.ug)) +
   geom_boxplot() +
   labs(y="Nitrogen",x="") +
-  theme_bw() +
+  theme_linedraw() +
   facet_wrap(~month)
 
 ggplot(ems.sia,aes(basin,c.amount.ug)) +
   geom_boxplot() +
   labs(y="Carbon",x="") +
-  theme_bw() +
+  theme_linedraw() +
   facet_wrap(~month)

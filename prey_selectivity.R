@@ -10,9 +10,9 @@
 ## Source Data_Init Script ... get ems_cal data.frame
 ## ===========================================================
 source('data_init.R')
-str(ems.diet)
-str(ems.zoop)
-str(ems.benthos)
+ems.diet
+ems.zoop
+ems.benthos
 
 ## -----------------------------------------------------------
 ## Remove stomachs with no diet contents
@@ -24,7 +24,7 @@ ems.diet %<>% filter(food.item != 'Empty')
 ## -----------------------------------------------------------
 ems.prey <- bind_rows(ems.zoop,ems.benthos) %>% 
   group_by(month,region,basin,ems.taxa) %>% 
-  summarize(biomass=sum(biomass))
+  summarize(biomass=mean(biomass))
 
 ## -----------------------------------------------------------
 ## Create unique lists of serials sampled, FID, diet prey, and available prey
@@ -37,34 +37,13 @@ fid.list <- unique(ems.diet$fid)
 diet.list <- unique(ems.diet$food.item)
 prey.list <- unique(ems.prey$ems.taxa)
 
+##############################################################
+## Prey Available in Environment (Benthos and Zoops)
+##############################################################
 ## -----------------------------------------------------------
 ## Filter prey taxa to only indentified taxa
 ## -----------------------------------------------------------
 ems.prey %<>% filter(ems.taxa %in% diet.list, month %in% month.list)
-
-## -----------------------------------------------------------
-## Create a loop function to add zeros for all prey taxa missing from each region
-## -----------------------------------------------------------
-## Apply loop function
-diet.missing <- data.frame(do.call(rbind,lapply(fid.list,function(i) {
-  ## Filter catch by each serial
-  fid2 <- ems.diet %>% filter(fid==i)
-  serial <- unique(as.character(fid2$serial))
-  region <- unique(as.character(fid2$region))
-  ## True/false output if life stages does not exist (zero value life stages)
-  pl <- diet.list[!diet.list %in% fid2$food.item]
-  ## Determine the number of life stages to be added
-  n <- length(pl)
-  ## Create data frame with all zero value life stages, repeat by 'n'
-  tmp <- data.frame(fid=rep(i,n),serial=serial,region=region,food.item=pl,biomass=rep(0,n))
-})))
-
-## -----------------------------------------------------------
-## Join zero data by serial to fill in other variables
-## -----------------------------------------------------------
-ems.diet.effort <- ems.diet %>% distinct(serial,month,region,basin) %>% select(serial,month,region,basin)
-ems.diet.zero <- left_join(diet.missing,ems.diet.effort)
-ems.diet.all <- bind_rows(ems.diet,ems.diet.zero) %>% arrange(fid)
 
 ## -----------------------------------------------------------
 ## Create a loop function to add zeros for all prey taxa missing from each serial
@@ -91,8 +70,38 @@ ems.prey.effort <- ems.prey %>% distinct(month,region,basin) %>% select(month,re
 ems.prey.zero <- left_join(envir.missing,ems.prey.effort)
 ems.prey.all <- bind_rows(ems.prey,ems.prey.zero) %>% arrange(month,region)
 
+##############################################################
+## Prey Consumed in Diets (Benthos and Zoops)
+##############################################################
 ## -----------------------------------------------------------
-## Calculate the proportion of prey available in the environment
+## Create a loop function to add zeros for all prey taxa missing from each region
+## -----------------------------------------------------------
+## Apply loop function
+diet.missing <- data.frame(do.call(rbind,lapply(fid.list,function(i) {
+  ## Filter catch by each serial
+  fid2 <- ems.diet %>% filter(fid==i)
+  serial <- unique(as.character(fid2$serial))
+  region <- unique(as.character(fid2$region))
+  ## True/false output if life stages does not exist (zero value life stages)
+  pl <- diet.list[!diet.list %in% fid2$food.item]
+  ## Determine the number of life stages to be added
+  n <- length(pl)
+  ## Create data frame with all zero value life stages, repeat by 'n'
+  tmp <- data.frame(fid=rep(i,n),serial=serial,region=region,food.item=pl,mean.size=rep(0,n),biomass=rep(0,n))
+})))
+
+## -----------------------------------------------------------
+## Join zero data by serial to fill in other variables
+## -----------------------------------------------------------
+ems.diet.effort <- ems.diet %>% distinct(serial,month,region,basin) %>% select(serial,month,region,basin)
+ems.diet.zero <- left_join(diet.missing,ems.diet.effort)
+ems.diet.all <- bind_rows(ems.diet,ems.diet.zero) %>% arrange(fid)
+
+##############################################################
+## Calculations
+##############################################################
+## -----------------------------------------------------------
+## Calculate the proportion of prey in the diet of each individual fish
 ## -----------------------------------------------------------
 diet.prop <- as.data.frame(do.call(rbind,lapply(fid.list,function(i) {
   indiv <- ems.diet.all %>% filter(fid == i)
@@ -108,6 +117,7 @@ ems.diet.prop <- left_join(ems.diet,diet.prop)
 ## -----------------------------------------------------------
 ## Calculate the proportion of prey available in the environment
 ## -----------------------------------------------------------
+## May
 envir.may.prop <- as.data.frame(do.call(rbind,lapply(region.list,function(i) {
   indiv <- ems.prey.all %>% filter(region == i,month == 'May')
   prop <- as.data.frame(do.call(rbind,lapply(diet.list,function(j) {
@@ -117,6 +127,7 @@ envir.may.prop <- as.data.frame(do.call(rbind,lapply(region.list,function(i) {
 }))) %>% 
   mutate(envir.prop=V1) %>% select(-V1)
 
+## September
 envir.sept.prop <- as.data.frame(do.call(rbind,lapply(region.list,function(i) {
   indiv <- ems.prey.all %>% filter(region == i,month == 'September')
   prop <- as.data.frame(do.call(rbind,lapply(diet.list,function(j) {

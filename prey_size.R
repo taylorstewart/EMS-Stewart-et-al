@@ -85,7 +85,7 @@ ems.diet.mean.all$food.item <- gsub('Daphnidae','DA',ems.diet.mean.all$food.item
 ems.diet.mean.all$food.item <- gsub('Oligochaeta','OL',ems.diet.mean.all$food.item)
 
 ems.diet.mean.all %<>% arrange(month,basin,food.item) %>% 
-  filter(food.item %in% c('BO','CA','CL','CY','DA','LE')) %>% 
+  filter(food.item %in% c('BO','CA','CY','DA','LE')) %>% 
   arrange(month,basin,food.item) %>% 
   mutate(month=factor(month),
          basin=factor(basin,levels = c('Western','Central','Eastern'),ordered = TRUE),
@@ -99,15 +99,15 @@ ggplot(ems.diet.mean.all,aes(food.item,mean.prey.size,fill=basin)) +
                 width=0.25,
                 position = position_dodge(.9)) +
   geom_bar(stat='identity',position='dodge') +
-  scale_y_continuous(limits = c(0,8.5),expand=c(0,0)) +
+  scale_y_continuous(limits = c(0,2.5),expand=c(0,0)) +
   scale_fill_grey(start=0.2,end=0.7) +
-  theme_bw()
+  theme_linedraw()
 
 ggplot(ems.diet.mean.all,aes(food.item,mean.prey.size,fill=basin)) +
   geom_boxplot() +
-  scale_y_continuous(limits = c(0,8.5),expand=c(0,0)) +
+  scale_y_continuous(limits = c(0,2.5),expand=c(0,0)) +
   scale_fill_grey(start=0.2,end=0.7) +
-  theme_bw()
+  theme_linedraw()
 
 ## -----------------------------------------------------------
 ## ANOVA

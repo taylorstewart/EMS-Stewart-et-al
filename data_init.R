@@ -15,19 +15,21 @@ rm(list = ls(all.names=TRUE))
 ## Load Packages -- used here and in other scripts
 ##   other packages loaded as needed in the individual scripts
 ## ===========================================================
-library(multcomp)  # for glht()
-library(dplyr)     # manipulating data
-library(magrittr)  # for %<>%
-library(readxl)    # reading data
-library(ggplot2)   # visualizations
-library(FSA)       # ANCOVA functions
-library(car)       # assumption tests
-library(tidyr)     # tidy data
-library(nlstools)  # non-linear modeling
-library(grid)      # plot matrix text
-library(gridExtra) # plot matrix layout
-library(gtable)    # plot matrix legend
-library(NCStats)   # for addSigLetters()
+library(multcomp)   # for glht()
+library(dplyr)      # manipulating data
+library(magrittr)   # for %<>%
+library(readxl)     # reading data
+library(ggplot2)    # visualizations
+library(FSA)        # ANCOVA functions
+library(car)        # assumption tests
+library(tidyr)      # tidy data
+library(nlstools)   # non-linear modeling
+library(grid)       # plot matrix text
+library(gridExtra)  # plot matrix layout
+library(gtable)     # plot matrix legend
+library(NCStats)    # for addSigLetters()
+library(lsmeans)    # calculating least-squares means
+library(AICcmodavg) # for aictab()
 
 ## ===========================================================
 ## Load and Initial Manipulations of the Fish Sample Data

@@ -71,19 +71,39 @@ aictab(cand.set=list(glm(wet.HOC.JG~wet.wt+month+basin,data=ems.cal),
 
 ## Best fit according to AIC
 ## hoc~weight by month
-lm.wt.month <- lm(wet.HOC.JG~0+wet.wt+month+basin,data=ems.cal)
-summary(lm.wt.month)
-anova(lm.wt.month)
-residPlot(lm.wt.month)
-fitPlot(lm.wt.month)
+lm.wt <- lm(wet.HOC.JG~0+wet.wt+month+basin,data=ems.cal)
+summary(lm.wt)
+anova(lm.wt)
+residPlot(lm.wt)
+fitPlot(lm.wt)
 
-grid <- ref.grid(lm.wt.month,at=list(wet.wt=2.5))
-list <- data.frame(print(lsmeans(grid,list(~month|basin))))
-colnames(list) <- c('month','basin','lsmean','SE','df','lower.CL','upper.CL')
+## -----------------------------------------------------------
+## Calculate least-squares means
+## -----------------------------------------------------------
+## mean weight
+mean.wt <- ems.cal %>% summarize(mean.wt=mean(wet.wt))
+## create a reference grid from the fitted model
+lsm.grid <- ref.grid(lm.wt,at=list(wet.wt=as.numeric(mean.wt)))
+## least-squares means
+lsm <- data.frame(print(lsmeans(lsm.grid,list(~month|basin))))
+colnames(lsm) <- c('month','basin','lsmean','SE','df','lower.CL','upper.CL')
 
-ggplot(list,aes(basin,lsmean,colour=month)) +
-  geom_point(aes(group=month),position=position_dodge(0.3)) +
-  geom_line(aes(group=month),position=position_dodge(0.3)) +
-  geom_errorbar(aes(x=basin,ymin=lower.CL,ymax=upper.CL),width=0.25,alpha=0.75,position=position_dodge(0.3)) +
-  labs(y='Wet-weight Energy Density (J/g)',x='') +
-  theme_linedraw()
+  ## Can we define CL in lsmeans()? Is it 95%, 99%, etc.?
+
+## -----------------------------------------------------------
+## Visualization
+## -----------------------------------------------------------
+ggplot(lsm,aes(basin,lsmean,group=month)) +
+  geom_point(aes(group=month,shape=month),position=position_dodge(0.3),size=3) +
+  geom_line(aes(group=month,linetype=month),position=position_dodge(0.3),size=0.65) +
+  geom_errorbar(aes(x=basin,ymin=lower.CL,ymax=upper.CL),width=0.25,position=position_dodge(0.3),size=0.65) +
+  scale_y_continuous(limits=c(6000,9000),breaks=seq(6000,9000,500),expand=c(0,0)) +
+  labs(y='Wet-weight Energy Density (J/g)\n',x='') +
+  scale_fill_grey(start=0.2,end=0.7) +
+  scale_linetype_manual(values=c("solid","dotdash")) +
+  theme(axis.text=element_text(size=18),axis.line.x=element_line(),axis.line.y=element_line(),
+        legend.position='top',legend.text=element_text(size=15),legend.title=element_blank(),
+        legend.key=element_rect(size=10,color='white'),legend.key.width=unit(2.5,'lines'),
+        axis.title=element_text(size=22),axis.ticks.length=unit(1.75,'mm'),
+        panel.background=element_blank(),plot.margin=unit(c(1,1,1,1),"mm"))
+

@@ -268,7 +268,7 @@ sept.diet <- ggplot(filter(ems.diet.perc,month=='September'),aes(prey.type,perce
         plot.margin=unit(c(4,2,0,4),"mm"),axis.ticks.length=unit(1.75,'mm'))
 
 ## -----------------------------------------------------------
-## Save the plot as a figure (comment out line 186 and 226 until you are ready to save)
+## Save the plot as a figure (comment out line 273 and 289 until you are ready to save)
 ## -----------------------------------------------------------
 png("figs/percent_dry_weight_bar.PNG",width=7,height=7,units="in",family="Times",res=300)
 

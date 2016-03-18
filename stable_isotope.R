@@ -43,7 +43,7 @@ summary(lm.c.multc)
 lm.c.multc <- glht(lm(c.amount.ug~basin,data=filter(ems.sia,month=='Sept')),mcp(basin="Tukey"))
 summary(lm.c.multc)
 
-## boxplot
+## boxplots
 ggplot(ems.sia,aes(basin,n.amount.ug)) +
   geom_boxplot() +
   labs(y="Nitrogen",x="") +

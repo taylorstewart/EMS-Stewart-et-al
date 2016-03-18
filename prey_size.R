@@ -84,6 +84,9 @@ ems.diet.mean.all$food.item <- gsub('Chironomid Pupae','CP',ems.diet.mean.all$fo
 ems.diet.mean.all$food.item <- gsub('Daphnidae','DA',ems.diet.mean.all$food.item)
 ems.diet.mean.all$food.item <- gsub('Oligochaeta','OL',ems.diet.mean.all$food.item)
 
+## -----------------------------------------------------------
+## Arrange in ascending order, filter taxa, and mutate variable structure
+## -----------------------------------------------------------
 ems.diet.mean.all %<>% arrange(month,basin,food.item) %>% 
   filter(food.item %in% c('BO','CA','CY','DA','LE')) %>% 
   arrange(month,basin,food.item) %>% 
@@ -114,7 +117,7 @@ ggplot(ems.diet.mean.all,aes(food.item,mean.prey.size,fill=basin)) +
 ## -----------------------------------------------------------
 lm.prey.may <- lm(mean.prey.size~food.item*basin,data=filter(ems.diet.mean.all,month=="May"))
 lm.prey.sept <- lm(mean.prey.size~food.item*basin,data=filter(ems.diet.mean.all,month=="September"))
-lm.prey <- lm(mean.prey.size~food.item*basin+month,data=ems.diet.mean.all)
+lm.prey <- lm(mean.prey.size~food.item*basin*month,data=ems.diet.mean.all)
 anova(lm.prey.may)
 anova(lm.prey.sept)
 anova(lm.prey)

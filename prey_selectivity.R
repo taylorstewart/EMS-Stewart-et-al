@@ -248,7 +248,7 @@ pairwise.t.test(final.alpha$alpha,final.alpha$basin,paired=T,p.adjust.method='bo
 ## -----------------------------------------------------------
 may.west <- ggplot(filter(final.alpha,month=='May',basin=='Western'),aes(taxa,alpha)) +
   geom_bar(stat='identity') +
-  labs(x='',y='May',title='Western Basin\n') +
+  labs(x='',y='May',title='Western\n') +
   scale_y_continuous(limit=c(0,1),expand=c(0,0)) +
   theme(axis.line.y=element_line(),axis.line.x=element_line(),axis.ticks.length=unit(1.5,'mm'),
         axis.text.y=element_text(size=15,vjust=0.5,hjust=0),axis.text.x=element_blank(),plot.title=element_text(size=16),
@@ -256,7 +256,7 @@ may.west <- ggplot(filter(final.alpha,month=='May',basin=='Western'),aes(taxa,al
 
 may.cen <- ggplot(filter(final.alpha,month=='May',basin=='Central'),aes(taxa,alpha)) +
   geom_bar(stat='identity') +
-  labs(x='',y='',title='Central Basin\n') +
+  labs(x='',y='',title='Central\n') +
   scale_y_continuous(limit=c(0,1),expand=c(0,0)) +
   theme(axis.line.y=element_line(),axis.line.x=element_line(),plot.title=element_text(size=16),
         axis.text.y=element_blank(),axis.text.x=element_blank(),panel.background=element_blank(),
@@ -264,7 +264,7 @@ may.cen <- ggplot(filter(final.alpha,month=='May',basin=='Central'),aes(taxa,alp
 
 may.east <- ggplot(filter(final.alpha,month=='May',basin=='Eastern'),aes(taxa,alpha)) +
   geom_bar(stat='identity') +
-  labs(x='',y='',title='Eastern Basin\n') +
+  labs(x='',y='',title='Eastern\n') +
   scale_y_continuous(limit=c(0,1),expand=c(0,0)) +
   theme(axis.line.y=element_line(),axis.line.x=element_line(),plot.title=element_text(size=16),
         axis.text.y=element_blank(),axis.text.x=element_blank(),panel.background=element_blank(),

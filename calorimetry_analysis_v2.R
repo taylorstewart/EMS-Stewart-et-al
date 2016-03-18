@@ -90,8 +90,16 @@ colnames(lsm) <- c('month','basin','lsmean','SE','df','lower.CL','upper.CL')
 
   ## Can we define CL in lsmeans()? Is it 95%, 99%, etc.?
 
-## -----------------------------------------------------------
+##############################################################
 ## Visualization
+##############################################################
+## -----------------------------------------------------------
+## Save the plot as a figure (comment out line 273 and 289 until you are ready to save)
+## -----------------------------------------------------------
+png("figs/calorimetry_lsm.PNG",width=8,height=7,units="in",family="Times",res=300)
+
+## -----------------------------------------------------------
+## Make plot
 ## -----------------------------------------------------------
 ggplot(lsm,aes(basin,lsmean,group=month)) +
   geom_point(aes(group=month,shape=month),position=position_dodge(0.3),size=3) +
@@ -107,3 +115,7 @@ ggplot(lsm,aes(basin,lsmean,group=month)) +
         axis.title=element_text(size=22),axis.ticks.length=unit(1.75,'mm'),
         panel.background=element_blank(),plot.margin=unit(c(1,1,1,1),"mm"))
 
+## -----------------------------------------------------------
+## Close the device to make the actual PNG file
+## -----------------------------------------------------------
+dev.off()

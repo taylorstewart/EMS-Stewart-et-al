@@ -1,7 +1,7 @@
 EMS_Stewart
 ==========
 
-This repository contains data files, analysis scripts, and the draft manuscript *Spatio-temporal and interindividual variation of Emerald Shiner, Notropis atherinoides, diet and energy density in Lake Erie* by Taylor R. Stewart and Mark W. Rogers.
+This repository contains data files, analysis scripts, and the draft manuscript *Spatio-temporal and interindividual variation of Emerald Shiner, Notropis atherinoides, diet and energy density in Lake Erie* by Taylor R. Stewart, Mark W. Rogers, and Richard T. Kraus.
 
 
 # Data files (not in the repo)
@@ -18,16 +18,35 @@ This repository contains data files, analysis scripts, and the draft manuscript 
 # Scripts
 ## Initialization
 * `Data_Init.R` -- Initial loading of packages and data, initial preparation of data for other scripts.  This is sourced by all other scripts and creates the following data.frames.
-    * `ems_cal`: Used in the calorimetry analysis.
-    * `ems_diet`: Used in the diet analysis.
-    * `zoop_biomass`: Used in the prey selectivity analysis.
+    * `ems.cal`: Used in the calorimetry analysis.
+    * `ems.diet`: Used in the diet analysis.
+    * `ems.zoop`: Used in the prey selectivity analysis.
+    * `ems.benthos`: Used in the prey selectivity analysis.
+    * `ems.sia`: Used in the stable isotope analysis.
+    * `ems.pc`: Used in the physical conditions analysis.
 
 ## Length Frequency Analysis
 * `lw_regression.R` -- Processes the original length frequency data to produce a length-weight regression which was used to predict missing weights.
 
+## Diet Composition Analysis
+
+## Calorimetry Analysis
+
+## Prey Selectivity Analysis
+
+## Stable Isotope Analysis
+
+## Prey Size Analysis
+
+## Physical Conditions Analysis
+
+## Length Distribution Analysis
+
+## Miscellaneous Analyses
 
 # Other Files
 * `EMS_Stewart.Rproj` -- RStudio project file.
 * `.gitignore` -- things to ignore when committing or pushing to GitHub.
 * `README.md` -- This readme file.
 * `literature_resources` -- Folder of PDFs of relevant literature.
+* `old_scripts` -- Folder containing previous versions of analyses

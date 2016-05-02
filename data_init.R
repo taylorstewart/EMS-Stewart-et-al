@@ -30,6 +30,13 @@ library(gtable)     # plot matrix legend
 library(NCStats)    # for addSigLetters()
 library(lsmeans)    # calculating least-squares means
 library(AICcmodavg) # for aictab()
+library(car)        # for Boot()
+
+## ===========================================================
+## Set the random seed for reproducibility (i.e., randomization
+##   is used in the application of the prey selectivity CI's).
+## ===========================================================
+set.seed(84621684)
 
 ## ===========================================================
 ## Load and Initial Manipulations of the Fish Sample Data

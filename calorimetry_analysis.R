@@ -64,7 +64,7 @@ colnames(lsm) <- c('month','basin','lsmean','SE','df','lower.CL','upper.CL')
 ## -----------------------------------------------------------
 ## Save the plot as a figure (comment out line 273 and 289 until you are ready to save)
 ## -----------------------------------------------------------
-png("figs/calorimetry_lsm.PNG",width=8,height=7,units="in",family="Times",res=300)
+#png("figs/calorimetry_lsm.PNG",width=8,height=7,units="in",family="Times",res=300)
 
 ## -----------------------------------------------------------
 ## Make plot
@@ -86,4 +86,4 @@ ggplot(lsm,aes(basin,lsmean,group=month)) +
 ## -----------------------------------------------------------
 ## Close the device to make the actual PNG file
 ## -----------------------------------------------------------
-dev.off()
+#dev.off()

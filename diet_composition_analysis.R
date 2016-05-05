@@ -270,7 +270,7 @@ sept.diet <- ggplot(filter(ems.diet.perc,month=='September'),aes(prey.type,perce
 ## -----------------------------------------------------------
 ## Save the plot as a figure (comment out line 273 and 289 until you are ready to save)
 ## -----------------------------------------------------------
-png("figs/percent_dry_weight_bar.PNG",width=7,height=7,units="in",family="Times",res=300)
+#png("figs/percent_dry_weight_bar.PNG",width=7,height=7,units="in",family="Times",res=300)
 
 ## -----------------------------------------------------------
 ## Put plots into a matrix
@@ -286,4 +286,4 @@ grid.arrange(arrangeGrob(may.diet,
 ## -----------------------------------------------------------
 ## Close the device to make the actual PNG file
 ## -----------------------------------------------------------
-dev.off()
+#dev.off()

@@ -25,30 +25,30 @@ ems.sia %<>% mutate(basin=factor(basin,levels = c('Western','Central','Eastern')
 ## linear models as a function of weight
 ## -----------------------------------------------------------
 ## Nitrogen AIC
-aictab(cand.set=list(glm(n.amount.ug~wet.wt.g+month+basin,data=ems.sia),
-                     glm(n.amount.ug~wet.wt.g*basin,data=ems.sia),
-                     glm(n.amount.ug~wet.wt.g*month,data=ems.sia),
-                     glm(n.amount.ug~wet.wt.g*basin*month,data=ems.sia),
-                     glm(n.amount.ug~wet.wt.g,data=ems.sia)),
+aictab(cand.set=list(glm(d15N~wet.wt.g+month+basin,data=ems.sia),
+                     glm(d15N~wet.wt.g*basin,data=ems.sia),
+                     glm(d15N~wet.wt.g*month,data=ems.sia),
+                     glm(d15N~wet.wt.g*basin*month,data=ems.sia),
+                     glm(d15N~wet.wt.g,data=ems.sia)),
        modnames=c('No Interaction','Basin Only','Month Only','Basin and Month','Null'))
 
 ## Best fit according to AIC
 ## nitrogen~weight by month and basin
-lm.n <- glm(n.amount.ug~wet.wt.g+month+basin,data=ems.sia)
+lm.n <- glm(d15N~wet.wt.g*basin*month,data=ems.sia)
 summary(lm.n)
 anova(lm.n)
 
 ## Carbon AIC
-aictab(cand.set=list(glm(c.amount.ug~wet.wt.g+month+basin,data=ems.sia),
-                     glm(c.amount.ug~wet.wt.g*basin,data=ems.sia),
-                     glm(c.amount.ug~wet.wt.g*month,data=ems.sia),
-                     glm(c.amount.ug~wet.wt.g*basin*month,data=ems.sia),
-                     glm(c.amount.ug~wet.wt.g,data=ems.sia)),
+aictab(cand.set=list(glm(d13C~wet.wt.g+month+basin,data=ems.sia),
+                     glm(d13C~wet.wt.g*basin,data=ems.sia),
+                     glm(d13C~wet.wt.g*month,data=ems.sia),
+                     glm(d13C~wet.wt.g*basin*month,data=ems.sia),
+                     glm(d13C~wet.wt.g,data=ems.sia)),
        modnames=c('No Interaction','Basin Only','Month Only','Basin and Month','Null'))
 
 ## Best fit according to AIC
 ## carbon~weight by month and basin
-lm.c <- glm(c.amount.ug~wet.wt.g+month+basin,data=ems.sia)
+lm.c <- glm(d13C~wet.wt.g*basin*month,data=ems.sia)
 summary(lm.c)
 anova(lm.c)
 
@@ -105,7 +105,7 @@ lsm <- bind_rows(lsm.n,lsm.c) %>%
 ## -----------------------------------------------------------
 ## Save the plot as a figure (comment out line 273 and 289 until you are ready to save)
 ## -----------------------------------------------------------
-#png("figs/stable_isotope_lsm.PNG",width=8,height=7,units="in",family="Times",res=300)
+png("figs/stable_isotope_lsm.PNG",width=9,height=7,units="in",family="Times",res=300)
 
 ## -----------------------------------------------------------
 ## Make plot
@@ -114,7 +114,7 @@ ggplot(lsm,aes(basin,lsmean,group=month)) +
   geom_point(aes(group=month,shape=month),position=position_dodge(0.3),size=3) +
   geom_line(aes(group=month,linetype=month),position=position_dodge(0.3),size=0.65) +
   geom_errorbar(aes(x=basin,ymin=lower.CL,ymax=upper.CL),width=0.25,position=position_dodge(0.3),size=0.65) +
-  #scale_y_continuous(limits=c(6000,9000),breaks=seq(6000,9000,500),expand=c(0,0)) +
+  #scale_y_continuous(limits=c(100,700),expand=c(0,0)) +
   labs(y='Wet-weight Energy Density (J/g)\n',x='') +
   scale_fill_grey(start=0.2,end=0.7) +
   scale_linetype_manual(values=c("solid","dotdash")) +
@@ -122,10 +122,11 @@ ggplot(lsm,aes(basin,lsmean,group=month)) +
         legend.position='top',legend.text=element_text(size=15),legend.title=element_blank(),
         legend.key=element_rect(size=10,color='white'),legend.key.width=unit(2.5,'lines'),
         axis.title=element_text(size=22),axis.ticks.length=unit(1.75,'mm'),
+        strip.background=element_blank(),strip.text=element_text(size=18),
         panel.background=element_blank(),plot.margin=unit(c(1,1,1,1),"mm")) +
   facet_wrap(~type,scales = "free")
 
 ## -----------------------------------------------------------
 ## Close the device to make the actual PNG file
 ## -----------------------------------------------------------
-#dev.off()
+dev.off()

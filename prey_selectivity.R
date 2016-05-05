@@ -464,15 +464,16 @@ while(b0!=100) {
     print(b0)
   } else break 
 }
-rm(b0,alpha.se,n.se,alpha.se.greater,alpha.se.less,taxa.se.greater,taxa.se.less,model.se.greater,boot.se,ci.se,df1.se,df2.se)
+rm(x,b0,alpha.se,n.se,alpha.se.greater,alpha.se.less,taxa.se.greater,taxa.se.less,model.se.greater,boot.se,ci.se,df1.se,df2.se)
 
 ## -----------------------------------------------------------
 ## Bind all confidence intervals
 ## -----------------------------------------------------------
 alpha.conf <- bind_rows(df.mw.final,df.mc.final,df.me.final,df.sw.final,df.sc.final,df.se.final)
+rm(df.mw.final,df.mc.final,df.me.final,df.sw.final,df.sc.final,df.se.final)
 
 ## -----------------------------------------------------------
-## Rearrange data frame for paired t-test
+## Rearrange data frame; add zeros
 ## -----------------------------------------------------------
 ## Add zero values for consitent pairs among months and basins
 ## Apply first loop function
@@ -508,7 +509,25 @@ final.alpha <- bind_rows(alpha.conf,output1) %>%
   arrange(month,basin,taxa) %>% 
   mutate(basin=factor(basin,levels = c('Western','Central','Eastern'),ordered = TRUE))
 ## remove extra objects
-rm(alpha,alpha.conf,output1,basin.list,diet.list,month.list)
+rm(alpha.conf,output1,basin.list,month.list)
+
+## -----------------------------------------------------------
+## Rearrange for pairwise t-tests among taxa
+## -----------------------------------------------------------
+final.alpha.t <- data.frame(do.call(rbind,lapply(unique(alpha$fid),function(s) {
+  ## Filter catch by each serial
+  fid3 <- alpha %>% filter(fid==s)
+  month <- unique(fid3$month)
+  basin <- unique(fid3$basin)
+  ## True/false output if life stages does not exist (zero value life stages)
+  pl <- diet.list[!diet.list %in% fid3$taxa]
+  ## Determine the number of life stages to be added
+  n <- length(pl)
+  ## Create data frame with all zero value life stages, repeat by 'n'
+  tmp <- data.frame(fid=rep(s,n),month=month,basin=basin,taxa=pl,alpha=rep(0,n),alpha.arc=rep(0,n))
+  df <- bind_rows(fid3,tmp)
+})))
+rm(alpha,diet.list,fid.list)
 
 ## -----------------------------------------------------------
 ## abbreviate taxon
@@ -526,73 +545,113 @@ final.alpha$taxa <- gsub('Oligochaeta','OL',final.alpha$taxa)
 final.alpha %<>% arrange(month,basin,taxa) %>% 
   filter(taxa %in% c('BO','CA','CL','CY','DA','LE'))
 
+##############################################################
+## t-tests
+##############################################################
 ## -----------------------------------------------------------
-## season paired t-test
+## pooled taxa season paired t-test
 ## -----------------------------------------------------------
 t.test(filter(final.alpha,basin=='Western',month=='May')$alpha,filter(final.alpha,basin=='Western',month=='September')$alpha,paired=T)
 t.test(filter(final.alpha,basin=='Central',month=='May')$alpha,filter(final.alpha,basin=='Central',month=='September')$alpha,paired=T)
 t.test(filter(final.alpha,basin=='Eastern',month=='May')$alpha,filter(final.alpha,basin=='Eastern',month=='September')$alpha,paired=T)
 
 ## -----------------------------------------------------------
+## pooled taxa basin post-hoc pairwise t-test
+## -----------------------------------------------------------
+pairwise.t.test(filter(final.alpha,month=='May')$alpha,filter(final.alpha,month=='May')$basin,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha,month=='September')$alpha,filter(final.alpha,month=='September')$basin,p.adjust.method='bonferroni')
+
+## -----------------------------------------------------------
 ## basin post-hoc pairwise t-test
 ## -----------------------------------------------------------
-pairwise.t.test(filter(final.alpha,month=='May')$alpha,filter(final.alpha,month=='May')$basin,paired=T,p.adjust.method='bonferroni')
-pairwise.t.test(filter(final.alpha,month=='September')$alpha,filter(final.alpha,month=='September')$basin,paired=T,p.adjust.method='bonferroni')
-pairwise.t.test(final.alpha$alpha,final.alpha$basin,paired=T,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.final.alpha.t,month=='May',taxa=="Bosminidae")$alpha,filter(final.alpha.t,month=='May',taxa=="Bosminidae")$basin,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,month=='May',taxa=="Calanoida")$alpha,filter(final.alpha.t,month=='May',taxa=="Calanoida")$basin,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,month=='May',taxa=="Chironomid Larvae")$alpha,filter(final.alpha.t,month=='May',taxa=="Chironomid Larvae")$basin,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,month=='May',taxa=="Cyclopoida")$alpha,filter(final.alpha.t,month=='May',taxa=="Cyclopoida")$basin,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,month=='May',taxa=="Daphnidae")$alpha,filter(final.alpha.t,month=='May',taxa=="Daphnidae")$basin,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,month=='May',taxa=="Leptodoridae")$alpha,filter(final.alpha.t,month=='May',taxa=="Leptodoridae")$basin,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,month=='September',taxa=="Bosminidae")$alpha,filter(final.alpha.t,month=='September',taxa=="Bosminidae")$basin,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,month=='September',taxa=="Calanoida")$alpha,filter(final.alpha.t,month=='September',taxa=="Calanoida")$basin,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,month=='September',taxa=="Chironomid Larvae")$alpha,filter(final.alpha.t,month=='September',taxa=="Chironomid Larvae")$basin,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,month=='September',taxa=="Cyclopoida")$alpha,filter(final.alpha.t,month=='September',taxa=="Cyclopoida")$basin,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,month=='September',taxa=="Daphnidae")$alpha,filter(final.alpha.t,month=='September',taxa=="Daphnidae")$basin,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,month=='September',taxa=="Leptodoridae")$alpha,filter(final.alpha.t,month=='September',taxa=="Leptodoridae")$basin,p.adjust.method='bonferroni')
+
+## -----------------------------------------------------------
+## season post-hoc pairwise t-test
+## -----------------------------------------------------------
+pairwise.t.test(filter(final.alpha.t,basin=='Western',taxa=="Bosminidae")$alpha,filter(final.alpha.t,basin=='Western',taxa=="Bosminidae")$month,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,basin=='Western',taxa=="Calanoida")$alpha,filter(final.alpha.t,basin=='Western',taxa=="Calanoida")$month,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,basin=='Western',taxa=="Chironomid Larvae")$alpha,filter(final.alpha.t,basin=='Western',taxa=="Chironomid Larvae")$month,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,basin=='Western',taxa=="Cyclopoida")$alpha,filter(final.alpha.t,basin=='Western',taxa=="Cyclopoida")$month,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,basin=='Western',taxa=="Daphnidae")$alpha,filter(final.alpha.t,basin=='Western',taxa=="Daphnidae")$month,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,basin=='Western',taxa=="Leptodoridae")$alpha,filter(final.alpha.t,basin=='Western',taxa=="Leptodoridae")$month,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,basin=='Central',taxa=="Bosminidae")$alpha,filter(final.alpha.t,basin=='Central',taxa=="Bosminidae")$month,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,basin=='Central',taxa=="Calanoida")$alpha,filter(final.alpha.t,basin=='Central',taxa=="Calanoida")$month,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,basin=='Central',taxa=="Chironomid Larvae")$alpha,filter(final.alpha.t,basin=='Central',taxa=="Chironomid Larvae")$month,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,basin=='Central',taxa=="Cyclopoida")$alpha,filter(final.alpha.t,basin=='Central',taxa=="Cyclopoida")$month,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,basin=='Central',taxa=="Daphnidae")$alpha,filter(final.alpha.t,basin=='Central',taxa=="Daphnidae")$month,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,basin=='Central',taxa=="Leptodoridae")$alpha,filter(final.alpha.t,basin=='Central',taxa=="Leptodoridae")$month,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,basin=='Eastern',taxa=="Bosminidae")$alpha,filter(final.alpha.t,basin=='Eastern',taxa=="Bosminidae")$month,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,basin=='Eastern',taxa=="Calanoida")$alpha,filter(final.alpha.t,basin=='Eastern',taxa=="Calanoida")$month,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,basin=='Eastern',taxa=="Chironomid Larvae")$alpha,filter(final.alpha.t,basin=='Eastern',taxa=="Chironomid Larvae")$month,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,basin=='Eastern',taxa=="Cyclopoida")$alpha,filter(final.alpha.t,basin=='Eastern',taxa=="Cyclopoida")$month,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,basin=='Eastern',taxa=="Daphnidae")$alpha,filter(final.alpha.t,basin=='Eastern',taxa=="Daphnidae")$month,p.adjust.method='bonferroni')
+pairwise.t.test(filter(final.alpha.t,basin=='Eastern',taxa=="Leptodoridae")$alpha,filter(final.alpha.t,basin=='Eastern',taxa=="Leptodoridae")$month,p.adjust.method='bonferroni')
 
 ##############################################################
 ## Visualization
 ##############################################################
 may.west <- ggplot(filter(final.alpha,month=='May',basin=='Western'),aes(taxa,alpha)) +
-  geom_bar(stat='identity') +
-  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci)) +
+  geom_bar(stat='identity',fill="gray60",colour="black") +
+  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci,width=0.5)) +
   labs(x='',y='May',title='Western\n') +
-  scale_y_continuous(limit=c(0,1.006),expand=c(0,0)) +
+  scale_y_continuous(limit=c(0,1.0032),expand=c(0,0)) +
   theme(axis.line.y=element_line(),axis.line.x=element_line(),axis.ticks.length=unit(1.5,'mm'),
         axis.text.y=element_text(size=15,vjust=0.5,hjust=0),axis.text.x=element_blank(),plot.title=element_text(size=16),
         axis.title=element_text(size=19),panel.background=element_blank(),plot.margin=unit(c(5,0,-6,3),'mm'))
 
 may.cen <- ggplot(filter(final.alpha,month=='May',basin=='Central'),aes(taxa,alpha)) +
-  geom_bar(stat='identity') +
-  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci)) +
+  geom_bar(stat='identity',fill="gray60",colour="black") +
+  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci,width=0.5)) +
   labs(x='',y='',title='Central\n') +
-  scale_y_continuous(limit=c(0,1.006),expand=c(0,0)) +
+  scale_y_continuous(limit=c(0,1.0032),expand=c(0,0)) +
   theme(axis.line.y=element_line(),axis.line.x=element_line(),plot.title=element_text(size=16),
         axis.text.y=element_blank(),axis.text.x=element_blank(),panel.background=element_blank(),
         axis.ticks.length=unit(1.5,'mm'),plot.margin=unit(c(5,8,-4,8),'mm'))
 
 may.east <- ggplot(filter(final.alpha,month=='May',basin=='Eastern'),aes(taxa,alpha)) +
-  geom_bar(stat='identity') +
-  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci)) +
+  geom_bar(stat='identity',fill="gray60",colour="black") +
+  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci,width=0.5)) +
   labs(x='',y='',title='Eastern\n') +
-  scale_y_continuous(limit=c(0,1.006),expand=c(0,0)) +
+  scale_y_continuous(limit=c(0,1.0032),expand=c(0,0)) +
   theme(axis.line.y=element_line(),axis.line.x=element_line(),plot.title=element_text(size=16),
         axis.text.y=element_blank(),axis.text.x=element_blank(),panel.background=element_blank(),
         axis.ticks.length=unit(1.5,'mm'),plot.margin=unit(c(5,16,-4,0),'mm'))
 
 sept.west <- ggplot(filter(final.alpha,month=='September',basin=='Western'),aes(taxa,alpha)) +
-  geom_bar(stat='identity') +
-  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci)) +
+  geom_bar(stat='identity',fill="gray60",colour="black") +
+  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci,width=0.5)) +
   labs(x='',y='September',title='') +
-  scale_y_continuous(limit=c(0,1.006),expand=c(0,0)) +
+  scale_y_continuous(limit=c(0,1.0032),expand=c(0,0)) +
   theme(axis.line.y=element_line(),axis.line.x=element_line(),
         axis.text.x=element_text(size=13),axis.text.y=element_text(size=15),axis.ticks.length=unit(1.5,'mm'),
         axis.title=element_text(size=19),panel.background=element_blank(),plot.margin=unit(c(11,0,-17,3),'mm'))
 
 sept.cen <- ggplot(filter(final.alpha,month=='September',basin=='Central'),aes(taxa,alpha)) +
-  geom_bar(stat='identity') +
-  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci)) +
+  geom_bar(stat='identity',fill="gray60",colour="black") +
+  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci,width=0.5)) +
   labs(x='',y='',title='') +
-  scale_y_continuous(limit=c(0,1.006),expand=c(0,0)) +
+  scale_y_continuous(limit=c(0,1.0032),expand=c(0,0)) +
   theme(axis.line.y=element_line(),axis.line.x=element_line(),
         axis.text.x=element_text(size=13),axis.ticks.length=unit(1.5,'mm'),
         axis.text.y=element_blank(),panel.background=element_blank(),plot.margin=unit(c(11,8,-15,8),'mm'))
 
 sept.east <- ggplot(filter(final.alpha,month=='September',basin=='Eastern'),aes(taxa,alpha)) +
-  geom_bar(stat='identity') +
-  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci)) +
+  geom_bar(stat='identity',fill="gray60",colour="black") +
+  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci,width=0.5)) +
   labs(x='',y='',title='') +
-  scale_y_continuous(limit=c(0,1.006),expand=c(0,0)) +
+  scale_y_continuous(limit=c(0,1.0032),expand=c(0,0)) +
   theme(axis.line.y=element_line(),axis.line.x=element_line(),
         axis.text.x=element_text(size=13),axis.ticks.length=unit(1.5,'mm'),
         axis.text.y=element_blank(),panel.background=element_blank(),plot.margin=unit(c(11,15,-15,1),'mm'))
@@ -600,7 +659,7 @@ sept.east <- ggplot(filter(final.alpha,month=='September',basin=='Eastern'),aes(
 ## -----------------------------------------------------------
 ## Save the plot as a figure (comment out line 273 and 289 until you are ready to save)
 ## -----------------------------------------------------------
-png("figs/prey_selectivity_wCI.PNG",width=10.75,height=8.5,units="in",family="Times",res=300)
+#png("figs/prey_selectivity_wCI.PNG",width=10.75,height=8.5,units="in",family="Times",res=300)
 
 ## -----------------------------------------------------------
 ## Put plots into a matrix
@@ -620,4 +679,4 @@ grid.arrange(arrangeGrob(may.west,
 ## -----------------------------------------------------------
 ## Close the device to make the actual PNG file
 ## -----------------------------------------------------------
-dev.off()
+#dev.off()

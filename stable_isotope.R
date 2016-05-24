@@ -59,25 +59,23 @@ anova(lm.c)
 summary(glht(lm.n,mcp(basin="Tukey")))
 summary(glht(lm.n,mcp(month="Tukey")))
 
-  ## The mean nitrogen in western basin was significantly lower than the mean nitrogen in eastern
-  ## basin (p = 0.00111). Mean nitrogen was not significantly different in central and eastern 
-  ## or western basins (p = 0.11512, 0.65045; respectively). Finally, the mean nitrogen was 
-  ## not significant higher in September as compared to May (p < 0.503).
+  ## The mean nitrogen in eastern basin was significantly higher than the mean nitrogen in central 
+  ## and western basin (p = 0.04764, 0.00547; respectfully). Mean nitrogen was not significantly 
+  ## different in central and western basins (p = 0.83965). Finally, the mean nitrogen was 
+  ## significant higher in September as compared to May (p = 0.0211).
 
 ## Carbon
 summary(glht(lm.c,mcp(basin="Tukey")))
 summary(glht(lm.c,mcp(month="Tukey")))
 
-  ## The mean nitrogen in eastern basin was significantly higher than the mean nitrogen in 
-  ## central and western basins (p = 0.0282, <0.001; respectively). Mean nitrogen was not 
-  ## significantly different in central and western basin (p = 0.8942). Finally, the mean nitrogen was 
-  ## not significant higher in September as compared to May (p < 0.0513).
+  ## The mean nitrogen in all three basins was not significantly different (p = 0.105, 0.313, 0.423). 
+  ## Finally, the mean nitrogen was not significant higher in September as compared to May (p < 0.0513).
 
 ## -----------------------------------------------------------
 ## Calculate least-squares means
 ## -----------------------------------------------------------
 ## mean weight
-mean.wt <- ems.sia %>% summarize(mean.wt=mean(wet.wt.g))
+mean.wt <- ems.sia %>% filter(!is.na(wet.wt.g)) %>% summarize(mean.wt=mean(wet.wt.g))
 
 ## NITROGEN
 ## create a reference grid from the fitted model (nitrogen)
@@ -130,3 +128,34 @@ ggplot(lsm,aes(basin,lsmean,group=month)) +
 ## Close the device to make the actual PNG file
 ## -----------------------------------------------------------
 dev.off()
+
+## -----------------------------------------------------------
+## Bi-plot
+## -----------------------------------------------------------
+## Calculate means and error bars
+ems.sia.summary <- ems.sia %>% group_by(month,basin,species) %>% 
+  summarize(d13C.mean = mean(d13C),
+            d13C.sd = sd(d13C),
+            d15N.mean = mean(d15N),
+            d15N.sd = sd(d15N),
+            n = n()) %>% 
+  mutate(d13C.error = qnorm(0.975)*d13C.sd/sqrt(n),
+         d15N.error = qnorm(0.975)*d15N.sd/sqrt(n)) %>% 
+  filter(month != "July")
+
+## Plot
+ggplot(ems.sia.summary,aes(d13C.mean,d15N.mean,shape=species,colour=month,linetype=basin)) +
+  geom_point(aes(shape=species,colour=month),size=3) +
+  geom_errorbar(aes(ymin=d15N.mean-d15N.error,ymax=d15N.mean+d15N.error),width=0.15,size=0.5) +
+  geom_errorbarh(aes(xmin=d13C.mean-d13C.error,xmax=d13C.mean+d13C.error),height=0.15,size=0.5) +
+  scale_y_continuous(limits=c(9,16)) +
+  scale_x_continuous(limits=c(-30,-21.5)) +
+  #scale_color_grey(start=0.1,end=0.6) +
+  labs(x="\nMean Carbon",y="Mean Nitrogen\n") +
+  guides(color=guide_legend(title="Month"),
+         shape=guide_legend(title="Species"),
+         linetype=guide_legend(title="Basin")) +
+  theme_bw() +
+  theme(axis.text=element_text(size=14),axis.title=element_text(size=18))
+
+ggsave("figs/stable_isotope_biplot.PNG",width=9,height=7,units="in",dpi=300)

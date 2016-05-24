@@ -247,7 +247,7 @@ may.diet <- ggplot(filter(ems.diet.perc,month=='May'),aes(prey.type,percent.dry,
                 position = position_dodge(.75)) +
   scale_fill_grey(start=0.2,end=0.7) +
   scale_y_continuous(limits = c(0,100),expand=c(0,0)) +
-  geom_bar(stat="identity",position="dodge",width = 0.75) +
+  geom_bar(stat="identity",position="dodge",width = 0.75,colour="black") +
   labs(title="May") +
   theme(axis.text.y=element_text(size=15),axis.text.x=element_blank(),axis.line.x=element_line(),axis.line.y=element_line(),
         legend.position=c(0.9,0.9),legend.text=element_text(size=15),legend.title=element_blank(),axis.title=element_blank(),
@@ -260,7 +260,7 @@ sept.diet <- ggplot(filter(ems.diet.perc,month=='September'),aes(prey.type,perce
                 position = position_dodge(.75)) +
   scale_fill_grey(start=0.2,end=0.7) +
   scale_y_continuous(limits = c(0,100),expand=c(0,0)) +
-  geom_bar(stat="identity",position="dodge",width = 0.75) +
+  geom_bar(stat="identity",position="dodge",width = 0.75,colour="black") +
   labs(title="September") +
   theme(axis.text=element_text(size=15),axis.line.x=element_line(),axis.line.y=element_line(),
         legend.position='top',legend.title=element_text(),axis.title=element_blank(),
@@ -270,7 +270,7 @@ sept.diet <- ggplot(filter(ems.diet.perc,month=='September'),aes(prey.type,perce
 ## -----------------------------------------------------------
 ## Save the plot as a figure (comment out line 273 and 289 until you are ready to save)
 ## -----------------------------------------------------------
-#png("figs/percent_dry_weight_bar.PNG",width=7,height=7,units="in",family="Times",res=300)
+png("figs/percent_dry_weight_bar.PNG",width=7,height=7,units="in",family="Times",res=300)
 
 ## -----------------------------------------------------------
 ## Put plots into a matrix
@@ -286,4 +286,4 @@ grid.arrange(arrangeGrob(may.diet,
 ## -----------------------------------------------------------
 ## Close the device to make the actual PNG file
 ## -----------------------------------------------------------
-#dev.off()
+dev.off()

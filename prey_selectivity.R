@@ -602,54 +602,54 @@ pairwise.t.test(filter(final.alpha.t,basin=='Eastern',taxa=="Leptodoridae")$alph
 ##############################################################
 ## Visualization
 ##############################################################
-may.west <- ggplot(filter(final.alpha,month=='May',basin=='Western'),aes(taxa,alpha)) +
+may.west.row <- ggplot(filter(final.alpha,month=='May',basin=='Western'),aes(taxa,alpha)) +
   geom_bar(stat='identity',fill="gray60",colour="black") +
-  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci,width=0.5)) +
+  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci,width=0.5),size=0.75) +
   labs(x='',y='May',title='Western\n') +
   scale_y_continuous(limit=c(0,1.0032),expand=c(0,0)) +
   theme(axis.line.y=element_line(),axis.line.x=element_line(),axis.ticks.length=unit(1.5,'mm'),
         axis.text.y=element_text(size=15,vjust=0.5,hjust=0),axis.text.x=element_blank(),plot.title=element_text(size=16),
         axis.title=element_text(size=19),panel.background=element_blank(),plot.margin=unit(c(5,0,-6,3),'mm'))
 
-may.cen <- ggplot(filter(final.alpha,month=='May',basin=='Central'),aes(taxa,alpha)) +
+may.cen.row <- ggplot(filter(final.alpha,month=='May',basin=='Central'),aes(taxa,alpha)) +
   geom_bar(stat='identity',fill="gray60",colour="black") +
-  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci,width=0.5)) +
+  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci,width=0.5),size=0.75) +
   labs(x='',y='',title='Central\n') +
   scale_y_continuous(limit=c(0,1.0032),expand=c(0,0)) +
   theme(axis.line.y=element_line(),axis.line.x=element_line(),plot.title=element_text(size=16),
         axis.text.y=element_blank(),axis.text.x=element_blank(),panel.background=element_blank(),
         axis.ticks.length=unit(1.5,'mm'),plot.margin=unit(c(5,8,-4,8),'mm'))
 
-may.east <- ggplot(filter(final.alpha,month=='May',basin=='Eastern'),aes(taxa,alpha)) +
+may.east.row <- ggplot(filter(final.alpha,month=='May',basin=='Eastern'),aes(taxa,alpha)) +
   geom_bar(stat='identity',fill="gray60",colour="black") +
-  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci,width=0.5)) +
+  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci,width=0.5),size=0.75) +
   labs(x='',y='',title='Eastern\n') +
   scale_y_continuous(limit=c(0,1.0032),expand=c(0,0)) +
   theme(axis.line.y=element_line(),axis.line.x=element_line(),plot.title=element_text(size=16),
         axis.text.y=element_blank(),axis.text.x=element_blank(),panel.background=element_blank(),
         axis.ticks.length=unit(1.5,'mm'),plot.margin=unit(c(5,16,-4,0),'mm'))
 
-sept.west <- ggplot(filter(final.alpha,month=='September',basin=='Western'),aes(taxa,alpha)) +
+sept.west.row <- ggplot(filter(final.alpha,month=='September',basin=='Western'),aes(taxa,alpha)) +
   geom_bar(stat='identity',fill="gray60",colour="black") +
-  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci,width=0.5)) +
+  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci,width=0.5),size=0.75) +
   labs(x='',y='September',title='') +
   scale_y_continuous(limit=c(0,1.0032),expand=c(0,0)) +
   theme(axis.line.y=element_line(),axis.line.x=element_line(),
         axis.text.x=element_text(size=13),axis.text.y=element_text(size=15),axis.ticks.length=unit(1.5,'mm'),
         axis.title=element_text(size=19),panel.background=element_blank(),plot.margin=unit(c(11,0,-17,3),'mm'))
 
-sept.cen <- ggplot(filter(final.alpha,month=='September',basin=='Central'),aes(taxa,alpha)) +
+sept.cen.row <- ggplot(filter(final.alpha,month=='September',basin=='Central'),aes(taxa,alpha)) +
   geom_bar(stat='identity',fill="gray60",colour="black") +
-  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci,width=0.5)) +
+  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci,width=0.5),size=0.75) +
   labs(x='',y='',title='') +
   scale_y_continuous(limit=c(0,1.0032),expand=c(0,0)) +
   theme(axis.line.y=element_line(),axis.line.x=element_line(),
         axis.text.x=element_text(size=13),axis.ticks.length=unit(1.5,'mm'),
         axis.text.y=element_blank(),panel.background=element_blank(),plot.margin=unit(c(11,8,-15,8),'mm'))
 
-sept.east <- ggplot(filter(final.alpha,month=='September',basin=='Eastern'),aes(taxa,alpha)) +
+sept.east.row <- ggplot(filter(final.alpha,month=='September',basin=='Eastern'),aes(taxa,alpha)) +
   geom_bar(stat='identity',fill="gray60",colour="black") +
-  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci,width=0.5)) +
+  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci,width=0.5),size=0.75) +
   labs(x='',y='',title='') +
   scale_y_continuous(limit=c(0,1.0032),expand=c(0,0)) +
   theme(axis.line.y=element_line(),axis.line.x=element_line(),
@@ -659,17 +659,17 @@ sept.east <- ggplot(filter(final.alpha,month=='September',basin=='Eastern'),aes(
 ## -----------------------------------------------------------
 ## Save the plot as a figure (comment out line 273 and 289 until you are ready to save)
 ## -----------------------------------------------------------
-#png("figs/prey_selectivity_wCI.PNG",width=10.75,height=8.5,units="in",family="Times",res=300)
+png("figs/prey_selectivity_row_wCI.PNG",width=10.75,height=8.5,units="in",family="Times",res=300)
 
 ## -----------------------------------------------------------
 ## Put plots into a matrix
 ## -----------------------------------------------------------
-grid.arrange(arrangeGrob(may.west,
-                         may.cen,
-                         may.east,
-                         sept.west,
-                         sept.cen,
-                         sept.east,
+grid.arrange(arrangeGrob(may.west.row,
+                         may.cen.row,
+                         may.east.row,
+                         sept.west.row,
+                         sept.cen.row,
+                         sept.east.row,
                          ncol=3,
                          nrow=2,
                          left=textGrob("Selectivity Index (W')",y=unit(90,'mm'),rot=90,gp=gpar(fontsize=25)),
@@ -679,4 +679,98 @@ grid.arrange(arrangeGrob(may.west,
 ## -----------------------------------------------------------
 ## Close the device to make the actual PNG file
 ## -----------------------------------------------------------
-#dev.off()
+dev.off()
+
+## -----------------------------------------------------------
+## 
+## -----------------------------------------------------------
+may.west.col <- ggplot(filter(final.alpha,month=='May',basin=='Western'),aes(taxa,alpha)) +
+  geom_bar(stat='identity',fill="gray60",colour="black",width=0.75) +
+  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci,width=0.4),size=0.75) +
+  labs(x='',y='\nWestern\n',title='May\n') +
+  scale_y_continuous(limit=c(0,1.0032),expand=c(0,0)) +
+  theme(axis.line.y=element_line(),axis.line.x=element_line(),axis.ticks.length=unit(1.5,'mm'),
+        axis.text.y=element_text(size=18),axis.text.x=element_blank(),
+        axis.title.y=element_text(size=24),axis.title.x=element_text(size=24),
+        plot.title=element_text(size=21),panel.background=element_blank(),
+        plot.margin=unit(c(1,0,-7,-6),'mm'))
+
+may.cen.col <- ggplot(filter(final.alpha,month=='May',basin=='Central'),aes(taxa,alpha)) +
+  geom_bar(stat='identity',fill="gray60",colour="black",width=0.75) +
+  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci,width=0.4),size=0.75) +
+  labs(x='',y='\nCentral\n',title='') +
+  scale_y_continuous(limit=c(0,1.0032),expand=c(0,0)) +
+  theme(axis.line.y=element_line(),axis.line.x=element_line(),axis.ticks.length=unit(1.5,'mm'),
+        axis.text.y=element_text(size=18),axis.text.x=element_blank(),
+        axis.title.y=element_text(size=24),axis.title.x=element_text(size=24),
+        plot.title=element_text(size=21),panel.background=element_blank(),
+        plot.margin=unit(c(4,0,-5,-6),'mm'))
+
+may.east.col <- ggplot(filter(final.alpha,month=='May',basin=='Eastern'),aes(taxa,alpha)) +
+  geom_bar(stat='identity',fill="gray60",colour="black",width=0.75) +
+  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci,width=0.4),size=0.75) +
+  labs(x='',y='\nEastern\n',title='') +
+  scale_y_continuous(limit=c(0,1.0032),expand=c(0,0)) +
+  theme(axis.line.y=element_line(),axis.line.x=element_line(),axis.ticks.length=unit(1.5,'mm'),
+        axis.text.y=element_text(size=18),axis.text.x=element_text(size=16),
+        axis.title.y=element_text(size=24),axis.title.x=element_text(size=24),
+        plot.title=element_text(size=21),panel.background=element_blank(),
+        plot.margin=unit(c(3,0,-8,-6),'mm'))
+
+sept.west.col <- ggplot(filter(final.alpha,month=='September',basin=='Western'),aes(taxa,alpha)) +
+  geom_bar(stat='identity',fill="gray60",colour="black",width=0.75) +
+  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci,width=0.4),size=0.75) +
+  labs(x='',y='',title='September\n') +
+  scale_y_continuous(limit=c(0,1.0032),expand=c(0,0)) +
+  theme(axis.line.y=element_line(),axis.line.x=element_line(),axis.ticks.length=unit(1.5,'mm'),
+        axis.text.y=element_blank(),axis.text.x=element_blank(),
+        axis.title.y=element_text(size=24),axis.title.x=element_text(size=24),
+        plot.title=element_text(size=21),panel.background=element_blank(),
+        plot.margin=unit(c(1,15,-7,7),'mm'))
+
+sept.cen.col <- ggplot(filter(final.alpha,month=='September',basin=='Central'),aes(taxa,alpha)) +
+  geom_bar(stat='identity',fill="gray60",colour="black",width=0.75) +
+  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci,width=0.4),size=0.75) +
+  labs(x='',y='',title='') +
+  scale_y_continuous(limit=c(0,1.0032),expand=c(0,0)) +
+  theme(axis.line.y=element_line(),axis.line.x=element_line(),axis.ticks.length=unit(1.5,'mm'),
+        axis.text.y=element_blank(),axis.text.x=element_blank(),
+        axis.title.y=element_text(size=24),axis.title.x=element_text(size=24),
+        plot.title=element_text(size=21),panel.background=element_blank(),
+        plot.margin=unit(c(4,15,-5,7),'mm'))
+
+sept.east.col <- ggplot(filter(final.alpha,month=='September',basin=='Eastern'),aes(taxa,alpha)) +
+  geom_bar(stat='identity',fill="gray60",colour="black",width=0.75) +
+  geom_errorbar(aes(ymin=lower.ci,ymax=upper.ci,width=0.4),size=0.75) +
+  labs(x='',y='',title='') +
+  scale_y_continuous(limit=c(0,1.0032),expand=c(0,0)) +
+  theme(axis.line.y=element_line(),axis.line.x=element_line(),axis.ticks.length=unit(1.5,'mm'),
+        axis.text.y=element_blank(),axis.text.x=element_text(size=16),
+        axis.title.y=element_text(size=24),axis.title.y=element_text(size=24),
+        plot.title=element_text(size=21),panel.background=element_blank(),
+        plot.margin=unit(c(3,15,-5,7),'mm'))
+
+## -----------------------------------------------------------
+## Save the plot as a figure (comment out line 273 and 289 until you are ready to save)
+## -----------------------------------------------------------
+png("figs/prey_selectivity_col_wCI.PNG",width=10.5,height=10.75,units="in",family="Times",res=300)
+
+## -----------------------------------------------------------
+## Put plots into a matrix
+## -----------------------------------------------------------
+grid.arrange(arrangeGrob(may.west.col,
+                         sept.west.col,
+                         may.cen.col,
+                         sept.cen.col,
+                         may.east.col,
+                         sept.east.col,
+                         ncol=2,
+                         nrow=3,
+                         left=textGrob("Selectivity Index (W')",y=unit(123,'mm'),rot=90,gp=gpar(fontsize=25)),
+                         bottom=textGrob('Prey Type',y=unit(-5,'mm'),x=unit(135,'mm'),gp=gpar(fontsize=25))),
+             heights=c(8,1))
+
+## -----------------------------------------------------------
+## Close the device to make the actual PNG file
+## -----------------------------------------------------------
+dev.off()
